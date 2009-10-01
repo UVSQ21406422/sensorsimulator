@@ -117,6 +117,14 @@ public class SensorFileInputStream {
         return sensorPacket;
     }
 
+    public void resetSensorFileInputStream() throws SimulatorException {
+        try {
+            bufferIn = new BufferedReader(new InputStreamReader(new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))));
+        } catch (FileNotFoundException ex) {
+            throw new SimulatorException("Error 003: Source file not found");
+        }
+    }
+
     /**
      * change the default data size
      * @param s, new data size

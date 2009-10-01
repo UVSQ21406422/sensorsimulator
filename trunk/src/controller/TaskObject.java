@@ -13,12 +13,12 @@ public class TaskObject implements Cloneable{
 
     private byte[] data;
     private int length;  // the length of bytes to be sent
-    private long excuteTime;
+    private long delay;
 
     public TaskObject() {
         data = null;
         length = -1;
-        excuteTime = -1;
+        delay = -1;
     }
 
     /**
@@ -31,7 +31,7 @@ public class TaskObject implements Cloneable{
         data = new byte[len];
         System.arraycopy(bytes, os, data, 0, len);
         length = len;
-        excuteTime = time;
+        delay = time;
     }
 
     @Override
@@ -55,8 +55,8 @@ public class TaskObject implements Cloneable{
      *
      * @return the time to be excuted
      */
-    public long getExcuteTime() {
-        return excuteTime;
+    public long getDelay() {
+        return delay;
     }
 
     /**

@@ -18,6 +18,7 @@ public class SimulatorException extends Exception {
      * Error 006: Unable to start SPP service
      * Error 007: Null connection
      * Error 008: Unable to close connection
+     * Error 009: Source file is empty
      * @param msg
      */
     public SimulatorException(String msg) {
