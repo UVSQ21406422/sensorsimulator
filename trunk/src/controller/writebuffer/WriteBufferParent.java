@@ -43,6 +43,7 @@ public abstract class WriteBufferParent extends Thread {
     // tempData = new byte[maxSize];
     }
 
+    
     /**
      * initialize parameters about packet size
      */
