@@ -13,7 +13,6 @@ import java.io.OutputStream;
  */
 public class TransmitBufferThread extends Thread {
 
-    
     private OutputStream os;
     private TransmissionBuffer buffer;
     private int index; // index in the taskBuffer
@@ -42,8 +41,8 @@ public class TransmitBufferThread extends Thread {
                     ex.printStackTrace();
                 }
                 // System.out.println(buffer.getBufferElementAt(index).getExcuteTime());
-                prevTime = buffer.getBufferElementAt(index).getExcuteTime();
-
+                // prevTime = buffer.getBufferElementAt(index).getExcuteTime();
+                delay = buffer.getBufferElementAt(index).getDelay();
                 //System.out.println(System.currentTimeMillis());
                 index++;
 
@@ -54,9 +53,8 @@ public class TransmitBufferThread extends Thread {
                 } else if (index == bufferSize / 2) {
                     buffer.turnOnWriting();
                 }
-                delay = buffer.getBufferElementAt(index).getExcuteTime() - prevTime;
-                
-                try {                  
+                // 
+                try {
                     Thread.sleep(delay);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();

@@ -67,29 +67,44 @@ public abstract class WriteBufferParent extends Thread {
         int repeatedPacketNo = 0;  // how many packet in one buffer element
         int offset = 0;  // offset in tempData
         boolean firstLoop = true; // after the first round to go through the whole buffer, switch to false
+        SensorPacket sp = null;
+        boolean rollOver = false;
         System.out.println("Loading...");
         while (!stop) {
             while (!stop && count < bufferSize) {
 
                 //packet header and sample number
                 fillPacketHeader(offset);
-               /* tempData[0 + offset] = (byte) 35; //"#"
+                /* tempData[0 + offset] = (byte) 35; //"#"
                 tempData[1 + offset] = (byte) 64; //"@"
                 tempData[2 + offset] = (byte) 0x00;
                 tempData[3 + offset] = (byte) 0x01;*/
 
                 try {
-                    SensorPacket sp = fileInputStream.readLine();
+                    try {
+                        sp = fileInputStream.readLine();
+                    } catch (SimulatorException ee) {
+                        if (rollOver) {
+                            throw new SimulatorException("Error 009: Source file is empty");
+                        } else {
+                            System.out.println("Playback");
+                            rollOver = true;
+                            fileInputStream.resetSensorFileInputStream();
+                            sp = fileInputStream.readLine();
+                        }
+                    }
                     System.arraycopy(sp.getPacketData(), 0, tempData, headerSize + offset, sp.getDataLength());
 
                     fillPacketTail(offset);
-                  //  tempData[packetSize - 1 + offset] = (byte) 36; //the end of the packet
+                    //  tempData[packetSize - 1 + offset] = (byte) 36; //the end of the packet
 
                     currTime = sp.getTimeStamp();
                     if (currTime != prevTime) {
                         if (prevTime != -1) {  //current time stamp is different with previous time stamp, this is a new buffer element
                             //create a new TaskObject
-                            TaskObject to = new TaskObject(tempData, 0, repeatedPacketNo * packetSize, prevTime);
+                            TaskObject to = new TaskObject(tempData, 0, repeatedPacketNo * packetSize, rollOver ? currTime : currTime - prevTime);
+
+                            rollOver = false;
 
                             //put it into the buffer
                             //if fail, roll back count by one
@@ -108,6 +123,7 @@ public abstract class WriteBufferParent extends Thread {
                                 buffer.turnOffWriting();
                             }
                         }
+
                         prevTime = currTime;
                     }
                     repeatedPacketNo++;
