@@ -60,7 +60,7 @@ public class SensorFileInputStream {
             lineString = bufferIn.readLine();
             if (lineString == null) {  // return null if the end of stream is reached
                 throw new SimulatorException("Error 001: End of file");
-            //return null;
+                //return null;
             } else {
                 StringTokenizer st = new StringTokenizer(lineString);
                 tokenCounts = st.countTokens();
@@ -112,16 +112,20 @@ public class SensorFileInputStream {
             }
         } catch (IOException ex) {
             throw new SimulatorException("Error 002: File Reading Exception");
-        // return null;
+            // return null;
         }
         return sensorPacket;
     }
 
     public void resetSensorFileInputStream() throws SimulatorException {
         try {
+            bufferIn.close();
+            bufferIn = null;
             bufferIn = new BufferedReader(new InputStreamReader(new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))));
         } catch (FileNotFoundException ex) {
             throw new SimulatorException("Error 003: Source file not found");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
