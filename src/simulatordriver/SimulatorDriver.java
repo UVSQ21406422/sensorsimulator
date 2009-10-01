@@ -20,7 +20,8 @@ public class SimulatorDriver {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String filepath = "C:/Users/CZC/Desktop/seat2.txt";
+        String filepath = "C:/Documents and Settings/chen/Desktop/tempPhoto/rawSeat.txt";
+        //String filepath = "C:/Users/CZC/Desktop/seat2.txt";
         SimulatorConnection simCon = new SimulatorConnection();
         Controller controller = null;
         Property wtPro = new Property(filepath, SensorFileInputStream.TimeStampPosition_End, Property.SensorType_WiTiltSensor);
