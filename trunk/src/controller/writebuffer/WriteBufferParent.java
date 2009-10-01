@@ -102,7 +102,7 @@ public abstract class WriteBufferParent extends Thread {
                     if (currTime != prevTime) {
                         if (prevTime != -1) {  //current time stamp is different with previous time stamp, this is a new buffer element
                             //create a new TaskObject
-                            TaskObject to = new TaskObject(tempData, 0, repeatedPacketNo * packetSize, rollOver ? currTime : currTime - prevTime);
+                            TaskObject to = new TaskObject(tempData, 0, repeatedPacketNo * packetSize, rollOver ? 0 : currTime - prevTime);
 
                             rollOver = false;
 
