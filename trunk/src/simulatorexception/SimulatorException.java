@@ -19,6 +19,7 @@ public class SimulatorException extends Exception {
      * Error 007: Null connection
      * Error 008: Unable to close connection
      * Error 009: Source file is empty
+     * Error 010: Unknown transmission mode
      * @param msg
      */
     public SimulatorException(String msg) {
