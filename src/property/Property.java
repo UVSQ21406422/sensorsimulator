@@ -11,6 +11,8 @@ package property;
 public class Property {
 
     public static final String SensorType_WiTiltSensor = "WiTilt V 3.0";
+    public static final byte TransMode_TimeStamp = (byte) 1;
+    public static final byte TransMode_Frequency = (byte) 2;
     /**
      * General Properties
      */
@@ -21,6 +23,7 @@ public class Property {
      * Advanced properties
      */
     private byte outputByteOrder; // low-high or high-low, default: High_Low
+    private byte transMode; //transmission based on time stamp on source file or based on user specified frequency, default: time stamp
     private int dataUnitFormat; //how many bytes to represent one data value, short(2), int(4) or long(8), default: short.
     private int bufferSize; // the size of transmit buffer, default: 50
     private int channelNumber; //number of active channels, default: 3
@@ -32,10 +35,11 @@ public class Property {
      * @param timestampposition, the position of time stamp in source file
      * @param sensortype, the type of sensor
      */
-    public Property(String path, byte timestampposition, String sensortype) {
+    public Property(String path, byte timestampposition, byte mode, String sensortype) {
         filePath = path;
         sensorType = sensortype;
         timeStampPosition = timestampposition;
+        transMode = mode;
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -53,6 +57,7 @@ public class Property {
         filePath = path;
         sensorType = SensorType_WiTiltSensor;
         timeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
+        transMode = TransMode_TimeStamp;
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -66,6 +71,7 @@ public class Property {
         filePath = "";
         sensorType = SensorType_WiTiltSensor;
         timeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
+        transMode = TransMode_TimeStamp;
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -75,10 +81,11 @@ public class Property {
         }
     }
 
-    public void setAllProperties(String path, String sensortype, byte timestampposition, byte outputbyteorder, int dataunitformat, int buffersize, int channelnumber, int maxsimpacno) {
+    public void setAllProperties(String path, String sensortype, byte timestampposition, byte outputbyteorder, byte mode, int dataunitformat, int buffersize, int channelnumber, int maxsimpacno) {
         filePath = path;
         sensorType = sensortype;
         timeStampPosition = timestampposition;
+        transMode = mode;
         outputByteOrder = outputbyteorder;
         dataUnitFormat = dataunitformat;
         bufferSize = buffersize;
@@ -86,10 +93,11 @@ public class Property {
         maxSimultaneouslyPacketNo = maxsimpacno;
     }
 
-    public void setGeneralProperties(String path, byte timestampposition, String sensortype) {
+    public void setGeneralProperties(String path, byte timestampposition, byte mode, String sensortype) {
         filePath = path;
         sensorType = sensortype;
         timeStampPosition = timestampposition;
+        transMode = mode;
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -99,10 +107,14 @@ public class Property {
         }
     }
 
+    /**
+     * reset properties to default
+     */
     public void resetProperties() {
         filePath = "";
         sensorType = SensorType_WiTiltSensor;
         timeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
+        transMode = TransMode_TimeStamp;
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -110,6 +122,10 @@ public class Property {
             channelNumber = 3;
             maxSimultaneouslyPacketNo = 6;
         }
+    }
+
+    public byte getTransMode() {
+        return transMode;
     }
 
     public String getSensorType() {
