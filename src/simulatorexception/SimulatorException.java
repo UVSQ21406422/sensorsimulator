@@ -1,5 +1,5 @@
 /**
- * Exception class
+ * Exception class Com
  */
 package simulatorexception;
 
