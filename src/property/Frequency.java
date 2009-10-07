@@ -32,8 +32,7 @@ public class Frequency {
             //calculate every element, two digits precision after floating point
             freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / d) / 100;
             d += minSleepUnit;
-        }
-        System.out.println("Table constructured with size = " + freTable.length);
+        }      
     }
 
     /**
@@ -49,13 +48,11 @@ public class Frequency {
                 sleepInterval = (i + 1) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]);
                 realFrequency = packetsPerTrans * freTable[i];
-                System.out.println("n = " + packetsPerTrans + " T = " + sleepInterval + " RF = " + realFrequency);
                 return;
             } else if (Math.abs(freTable[i] - mod) < (double) fre * frePrecision) {
                 sleepInterval = (i + 1) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]) + 1;
-                realFrequency = packetsPerTrans * freTable[i];
-                System.out.println("n = " + packetsPerTrans + " T = " + sleepInterval + " RF = " + realFrequency);
+                realFrequency = packetsPerTrans * freTable[i];               
                 return;
             }
         }

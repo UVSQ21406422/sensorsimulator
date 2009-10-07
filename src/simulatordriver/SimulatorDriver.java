@@ -26,7 +26,9 @@ public class SimulatorDriver {
         Controller controller = null;
         Property wtPro = null;
         try {
-            wtPro = new Property(filepath, Property.TransMode_TimeStamp, SensorFileInputStream.TimeStampPosition_End, Property.TransFrequency_DefaultFrequency, Property.SensorType_WiTiltSensor);
+            //  wtPro = new Property();
+            // wtPro = new Property(filepath);
+            wtPro = new Property(filepath, Property.TransMode_Frequency, SensorFileInputStream.TimeStampPosition_End, 160, Property.SensorType_WiTiltSensor);
         } catch (SimulatorException ex) {
             System.out.println(ex.getMessage());
             return;

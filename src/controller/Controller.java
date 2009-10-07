@@ -29,7 +29,7 @@ public class Controller {
         this.is = is;
         wtPro = p;
         bufferSize = p.getBufferSize();
-        transmissionBuffer = new TransmissionBuffer(bufferSize);       
+        transmissionBuffer = new TransmissionBuffer(bufferSize);
     }
 
     public void initFileInputStream() throws SimulatorException {
@@ -44,7 +44,7 @@ public class Controller {
         wtComreceiveThread.start();
         if (wtComreceiveThread.StartCommandReceived()) {
             wToBufferThread = new WriteToBufferWiTilt(wtPro, transmissionBuffer, sensorInStream);
-            trsBufferThread = new TransmitBufferThread(transmissionBuffer, os);
+            trsBufferThread = new TransmitBufferThread(wtPro, transmissionBuffer, os);
             wToBufferThread.start();
             trsBufferThread.start();
         }
