@@ -213,8 +213,16 @@ public class Property {
         return dataUnitFormat;
     }
 
-    public Frequency getFrequencyObj() {
-        return frequencyObj;
+    public int getPacketsPerTrans() {
+        return frequencyObj.getPacketsPerTrans();
+    }
+
+    public int getSleepInterval() {
+        return frequencyObj.getSleepInterval();
+    }
+
+    public double getRealFrequency() {
+        return frequencyObj.getRealFrequency();
     }
 
     public void setFrequencyPrecision(double pre) throws SimulatorException {
