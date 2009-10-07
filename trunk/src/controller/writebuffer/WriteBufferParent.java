@@ -27,7 +27,6 @@ public abstract class WriteBufferParent extends Thread {
     protected int headerSize;
     protected int tailSize;
     protected int transFrequency;
-    protected int packetsPerTrans;
     protected byte[] tempData;
     protected byte transMode; // transmission mode
     protected SensorFileInputStream fileInputStream;
@@ -42,9 +41,12 @@ public abstract class WriteBufferParent extends Thread {
         channelNumber = p.getChannelNumber();
         transMode = p.getTransMode();
         if (transMode == Property.TransMode_TimeStamp) {
+            //in time stamp mode, a limit is set for the number of packets would be transmit in one transmission
             maxSimultaneouslyPacketNo = p.getMaxSimultaneouslyPacketNo();
         } else if (transMode == Property.TransMode_Frequency) {
             transFrequency = p.getFrequency();
+            //in frequency mode, the number of packets in one transmission is required by the calculation result from desired frequency
+            maxSimultaneouslyPacketNo = p.getPacketsPerTrans();
         }
         // packetSize = channelNumber * 2 + 5;
         // maxSize = packetSize * maxSimultaneouslyPacketNo;
@@ -74,9 +76,9 @@ public abstract class WriteBufferParent extends Thread {
         long currTime = -1, prevTime = -1;
         int repeatedPacketNo = 0;  // how many packet in one buffer element
         int offset = 0;  // offset in tempData
-        boolean firstLoop = true; // after the first round to go through the whole buffer, switch to false
-        SensorPacket sp = null;
+        boolean firstLoop = true; // after the first round to go through the whole buffer, switch to false       
         boolean rollOver = false;
+        SensorPacket sp = null;
         System.out.println("Loading...");
         while (!stop) {
             while (!stop && count < bufferSize) {
@@ -106,7 +108,7 @@ public abstract class WriteBufferParent extends Thread {
                     fillPacketTail(offset);
                     //  tempData[packetSize - 1 + offset] = (byte) 36; //the end of the packet
 
-                    if (transMode == Property.TransMode_TimeStamp) {
+                    if (transMode == Property.TransMode_TimeStamp) { //time stamp mode
                         currTime = sp.getTimeStamp();
                         if (currTime != prevTime) {
                             if (prevTime != -1) {  //current time stamp is different with previous time stamp, this is a new buffer element
@@ -116,11 +118,11 @@ public abstract class WriteBufferParent extends Thread {
                                 rollOver = false;
 
                                 //put it into the buffer
-                                //if fail, roll back count by one
                                 buffer.setBufferElementAt(count, to);
 
-                                //move the current packet to the beginning of tempData
                                 repeatedPacketNo = 0;  // reset buffer element size
+
+                                //move the current packet to the beginning of tempData
                                 for (int i = 0; i < packetSize; i++) {
                                     tempData[i] = tempData[i + offset];
                                 }
@@ -132,17 +134,38 @@ public abstract class WriteBufferParent extends Thread {
                                     buffer.turnOffWriting();
                                 }
                             }
-
                             prevTime = currTime;
                         }
                         repeatedPacketNo++;
                         offset = repeatedPacketNo * packetSize;
-
                         continue;
-                    } else if (transMode == Property.TransMode_Frequency) {
+                    } else if (transMode == Property.TransMode_Frequency) { //frequency mode
+
+                        if (repeatedPacketNo == maxSimultaneouslyPacketNo - 1) {
+                            //create a new TaskObject
+                            TaskObject to = new TaskObject(tempData, 0, maxSimultaneouslyPacketNo * packetSize, -1);
+
+                            //put it into the buffer
+                            buffer.setBufferElementAt(count, to);
+
+                            repeatedPacketNo = 0;  // reset buffer element size
+                            offset = 0;
+
+                            count++;
+
+                            //stop loading once half the buffer is filled
+                            if (count == bufferSize / 2 && !firstLoop) {
+                                buffer.turnOffWriting();
+                            }
+                        } else {
+                            repeatedPacketNo++;
+                            offset = repeatedPacketNo * packetSize;
+                            continue;
+                        }
                     } else {
                         throw new SimulatorException("Error 010: Unknown transmission mode");
                     }
+
 
                 } catch (SimulatorException e) {
                     System.out.println(e.getMessage());
