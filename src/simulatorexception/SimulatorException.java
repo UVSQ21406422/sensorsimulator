@@ -20,6 +20,7 @@ public class SimulatorException extends Exception {
      * Error 008: Unable to close connection
      * Error 009: Source file is empty
      * Error 010: Unknown transmission mode
+     * Error 011: Desired frequency can not be achieved
      * @param msg
      */
     public SimulatorException(String msg) {
