@@ -6,8 +6,6 @@ package simulatordriver;
 
 import communication.SimulatorConnection;
 import controller.Controller;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import property.Property;
 import simulatorexception.SimulatorException;
 import sourcehandler.SensorFileInputStream;
