@@ -26,6 +26,7 @@ public abstract class WriteBufferParent extends Thread {
     protected int maxSize;  // the maximum size of tempData
     protected int headerSize;
     protected int tailSize;
+    protected int transFrequency;
     protected byte[] tempData;
     protected byte transMode; // transmission mode
     protected SensorFileInputStream fileInputStream;
@@ -35,11 +36,18 @@ public abstract class WriteBufferParent extends Thread {
         count = 0;
         stop = false;
         this.buffer = buffer;
-        bufferSize = p.getBufferSize();
         fileInputStream = in;
+        bufferSize = p.getBufferSize();
         channelNumber = p.getChannelNumber();
-        maxSimultaneouslyPacketNo = p.getMaxSimultaneouslyPacketNo();
         transMode = p.getTransMode();
+        if (transMode == Property.TransMode_TimeStamp) {
+            maxSimultaneouslyPacketNo = p.getMaxSimultaneouslyPacketNo();
+        } else if (transMode == Property.TransMode_Frequency) {
+            transFrequency = p.getFrequency();
+            
+        }
+
+
         // packetSize = channelNumber * 2 + 5;
         // maxSize = packetSize * maxSimultaneouslyPacketNo;
         // tempData = new byte[maxSize];

@@ -6,6 +6,8 @@ package simulatordriver;
 
 import communication.SimulatorConnection;
 import controller.Controller;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import property.Property;
 import simulatorexception.SimulatorException;
 import sourcehandler.SensorFileInputStream;
@@ -24,7 +26,13 @@ public class SimulatorDriver {
         String filepath = "D:/Study/WiTilt Simulator Project/testdata/short.txt";
         SimulatorConnection simCon = new SimulatorConnection();
         Controller controller = null;
-        Property wtPro = new Property(filepath, SensorFileInputStream.TimeStampPosition_End, Property.TransMode_TimeStamp, Property.SensorType_WiTiltSensor);
+        Property wtPro = null;
+        try {
+            wtPro = new Property(filepath, Property.TransMode_TimeStamp, SensorFileInputStream.TimeStampPosition_End, Property.TransFrequency_DefaultFrequency, Property.SensorType_WiTiltSensor);
+        } catch (SimulatorException ex) {
+            System.out.println(ex.getMessage());
+            return;
+        }
         try {
             simCon.startSppService();
             controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream());
