@@ -25,24 +25,21 @@ public class Property {
     private String sensorType;
     private String filePath;  //location of source file
     private byte timeStampPosition; // indicate the position of time stamp in source file
+    private byte transMode; //transmission based on time stamp on source file or based on user specified frequency, default: time stamp
+    private int transFrequency; // transmit frequency, default 100 Hz
     /**
      * Advanced properties
      */
     private byte outputByteOrder; // low-high or high-low, default: High_Low
-    private byte transMode; //transmission based on time stamp on source file or based on user specified frequency, default: time stamp
-    private int transFrequency; // transmit frequency, default 100 Hz
     private int dataUnitFormat; //how many bytes to represent one data value, short(2), int(4) or long(8), default: short.
     private int bufferSize; // the size of transmit buffer, default: 50
     private int channelNumber; //number of active channels, default: 3
     private int maxSimultaneouslyPacketNo; // maximum number of packet in one time frame, default 6
-    ////////////////////////////////////////////////////////// parameters can not be configured
-    private int minSleepUnit = 1;//the smallest sleep interval in this system in millisecond
-    private int sleepInterval;
-    private int packetsPerTrans; // number of packets to be transmitted in one transmission
-    private double[] freTable; // a table store all
-    private static final int millisecondsPerSecond = 1000;
-    private double frePrecision = 0.07; // frequency precision
-    private double realFrequency;
+    /**
+     * frequencyPrecision, from class: Frequency
+     */
+    ////////////////////////////////hidden parameters
+    private Frequency frequencyObj;
 
     /**
      * 
@@ -51,7 +48,7 @@ public class Property {
      * @param sensortype, the type of sensor
      */
     public Property(String path, byte mode, byte timestampposition, int fre, String sensortype) throws SimulatorException {
-        constructTable();
+        frequencyObj = new Frequency();
         filePath = path;
         sensorType = sensortype;
         timeStampPosition = timestampposition;
@@ -63,7 +60,7 @@ public class Property {
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
         }
-        calculateFrequency(transFrequency);
+        frequencyObj.calculateFrequency(transFrequency);
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -78,13 +75,13 @@ public class Property {
      * @param path the location of source file
      */
     public Property(String path) throws SimulatorException {
-        constructTable();
+        frequencyObj = new Frequency();
         filePath = path;
         sensorType = SensorType_WiTiltSensor;
         timeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
         transMode = TransMode_TimeStamp;
         transFrequency = TransFrequency_DefaultFrequency;
-        calculateFrequency(transFrequency);
+        frequencyObj.calculateFrequency(transFrequency);
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -95,13 +92,13 @@ public class Property {
     }
 
     public Property() throws SimulatorException {
-        constructTable();
+        frequencyObj = new Frequency();
         filePath = "";
         sensorType = SensorType_WiTiltSensor;
         timeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
         transMode = TransMode_TimeStamp;
         transFrequency = TransFrequency_DefaultFrequency;
-        calculateFrequency(transFrequency);
+        frequencyObj.calculateFrequency(transFrequency);
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -123,7 +120,7 @@ public class Property {
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
         }
-        calculateFrequency(transFrequency);
+        frequencyObj.calculateFrequency(transFrequency);
         outputByteOrder = outputbyteorder;
         dataUnitFormat = dataunitformat;
         bufferSize = buffersize;
@@ -143,7 +140,7 @@ public class Property {
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
         }
-        calculateFrequency(transFrequency);
+        frequencyObj.calculateFrequency(transFrequency);
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -162,7 +159,7 @@ public class Property {
         timeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
         transMode = TransMode_TimeStamp;
         transFrequency = TransFrequency_DefaultFrequency;
-        calculateFrequency(transFrequency);
+        frequencyObj.calculateFrequency(transFrequency);
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
             dataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
@@ -216,55 +213,16 @@ public class Property {
         return dataUnitFormat;
     }
 
-    public int getPacketsPerTrans() {
-        return packetsPerTrans;
+    public Frequency getFrequencyObj() {
+        return frequencyObj;
     }
 
-    public int getSleepInterval() {
-        return sleepInterval;
+    public void setFrequencyPrecision(double pre) throws SimulatorException {
+        frequencyObj.setFrePrecision(pre);
+        frequencyObj.calculateFrequency(transFrequency);
     }
 
-    public double getRealFrequency() {
-        return realFrequency;
-    }
-
-    /**
-     * build frequency table
-     */
-    private void constructTable() {
-        freTable = null;
-        freTable = new double[millisecondsPerSecond / minSleepUnit];
-        int i = 0;
-        int d = minSleepUnit;
-        for (; i < freTable.length; i++) {
-            //calculate every element, two digits precision after floating point
-            freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / d) / 100;
-            d += minSleepUnit;
-        }
-        System.out.println("Table constructured with size = " + freTable.length);
-    }
-
-    /**
-     * calculate sleep interval and number of packets per transmission
-     * @param fre: desired frequency
-     */
-    private void calculateFrequency(int fre) throws SimulatorException {
-        int i = 0;
-        double mod = 0;
-        for (; i < freTable.length; i++) {
-            mod = (double) fre % freTable[i];
-            if (mod < (double) fre * frePrecision) {
-                sleepInterval = (i + 1) * minSleepUnit;
-                packetsPerTrans = (int) (fre / freTable[i]);
-                System.out.println("n = " + packetsPerTrans + " T = " + sleepInterval + " RF = " + packetsPerTrans * freTable[i]);
-                return;
-            } else if (Math.abs(freTable[i] - mod) < (double) fre * frePrecision) {
-                sleepInterval = (i + 1) * minSleepUnit;
-                packetsPerTrans = (int) (fre / freTable[i]) + 1;
-                System.out.println("n = " + packetsPerTrans + " T = " + sleepInterval + " RF = " + packetsPerTrans * freTable[i]);
-                return;
-            }
-        }
-        throw new SimulatorException("Error 011: Desired frequency can not be achieved");
+    public double getFrequencyPrecision() {
+        return frequencyObj.getFrePrecision();
     }
 }
