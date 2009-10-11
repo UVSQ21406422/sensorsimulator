@@ -24,15 +24,16 @@ public class Controller {
     private WiTiltCommandReceiving wtComreceiveThread;
     private Property wtPro;
 
-    public Controller(Property p, InputStream is, OutputStream os) {
+    public Controller(Property p, InputStream is, OutputStream os) throws SimulatorException {
         this.os = os;
         this.is = is;
         wtPro = p;
         bufferSize = p.getBufferSize();
         transmissionBuffer = new TransmissionBuffer(bufferSize);
+        initFileInputStream();
     }
 
-    public void initFileInputStream() throws SimulatorException {
+    private void initFileInputStream() throws SimulatorException {
         sensorInStream = new SensorFileInputStream(wtPro);
     }
 

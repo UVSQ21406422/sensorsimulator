@@ -8,16 +8,19 @@ import simulatorexception.SimulatorException;
  */
 public class Frequency {
 
-    private final int minSleepUnit = 1;//the smallest sleep interval in this system in millisecond
+    private int minSleepUnit;//the smallest sleep interval in this system in millisecond
     private final int millisecondsPerSecond = 1000;
-    private double frePrecision = 0.07; // frequency precision
+    private double frePrecision; // frequency precision
     private int sleepInterval;
     private int packetsPerTrans; // number of packets to be transmitted in one transmission
     private double[] freTable; // a table store all
     private double realFrequency;
 
-    public Frequency() {
+    public Frequency(int fre, int sleepUnit, double precision) throws SimulatorException {
+        minSleepUnit = sleepUnit;
+        frePrecision = precision;
         constructTable();
+        calculateFrequency(fre);
     }
 
     /**
@@ -32,7 +35,7 @@ public class Frequency {
             //calculate every element, two digits precision after floating point
             freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / d) / 100;
             d += minSleepUnit;
-        }      
+        }
     }
 
     /**
@@ -52,7 +55,7 @@ public class Frequency {
             } else if (Math.abs(freTable[i] - mod) < (double) fre * frePrecision) {
                 sleepInterval = (i + 1) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]) + 1;
-                realFrequency = packetsPerTrans * freTable[i];               
+                realFrequency = packetsPerTrans * freTable[i];
                 return;
             }
         }
@@ -69,13 +72,5 @@ public class Frequency {
 
     protected double getRealFrequency() {
         return realFrequency;
-    }
-
-    protected void setFrePrecision(double frePrecision) {
-        this.frePrecision = frePrecision;
-    }
-
-    protected double getFrePrecision() {
-        return frePrecision;
     }
 }
