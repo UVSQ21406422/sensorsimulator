@@ -7,6 +7,7 @@ package sourcehandler;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -162,6 +163,14 @@ public class SensorFileInputStream {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     *get the size of source file
+     * @return the size of file in bytes
+     */
+    public long getFileSize() {
+        return new File(filePath).length();
     }
 
     /**

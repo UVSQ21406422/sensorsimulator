@@ -27,8 +27,8 @@ public class SimulatorDriver {
         Property wtPro = null;
         try {
             //  wtPro = new Property();
-            // wtPro = new Property(filepath);
-            wtPro = new Property(filepath, Property.TransMode_Frequency, SensorFileInputStream.TimeStampPosition_End, 160, Property.SensorType_WiTiltSensor);
+            //wtPro = new Property(filepath);
+            wtPro = new Property(filepath, Property.TransMode_TimeStamp, SensorFileInputStream.TimeStampPosition_End, 160, Property.SensorType_WiTiltSensor);
         } catch (SimulatorException ex) {
             System.out.println(ex.getMessage());
             return;
@@ -36,7 +36,6 @@ public class SimulatorDriver {
         try {
             simCon.startSppService();
             controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream());
-            controller.initFileInputStream();
             controller.open();
         } catch (SimulatorException ex) {
             System.out.println(ex.getMessage());
