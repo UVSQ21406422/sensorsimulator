@@ -33,7 +33,7 @@ public class TransmitBufferThread extends Thread {
 
     @Override
     public void run() {
-        long delay = transMode == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission
+        long delay = transMode == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission       
         try {
             switch (transMode) {
                 case Property.TransMode_Frequency:
