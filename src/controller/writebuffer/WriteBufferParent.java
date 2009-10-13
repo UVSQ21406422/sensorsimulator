@@ -145,6 +145,8 @@ public abstract class WriteBufferParent extends Thread {
                             //create a new TaskObject
                             TaskObject to = new TaskObject(tempData, 0, maxSimultaneouslyPacketNo * packetSize, -1);
 
+                            rollOver = false;
+                            
                             //put it into the buffer
                             buffer.setBufferElementAt(count, to);
 

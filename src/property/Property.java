@@ -31,7 +31,7 @@ public class Property {
     private final int defaultChannelNumber = 3;
     private final int defaultMaxSimultaneouslyPacketNo = 6;
     private final int defaultIntervalUnit = 1;
-    private final double defaultFrePrecision = 0.07;
+    private final double defaultFrePrecision = 0.12;
     /**
      * General Properties
      */
