@@ -135,6 +135,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
+                          <Component id="saveButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="145" max="32767" attributes="0"/>
                           <Component id="advanceButton" linkSize="2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" pref="75" max="-2" attributes="0"/>
@@ -214,6 +216,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="advanceButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -300,9 +303,10 @@
         <Component class="javax.swing.JComboBox" name="timeStampComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="2">
+              <StringArray count="3">
                 <StringItem index="0" value="Beginning"/>
                 <StringItem index="1" value="End"/>
+                <StringItem index="2" value="None"/>
               </StringArray>
             </Property>
           </Properties>
@@ -317,6 +321,11 @@
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
             <Property name="text" type="java.lang.String" value="Hz"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="saveButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Save"/>
           </Properties>
         </Component>
       </SubComponents>

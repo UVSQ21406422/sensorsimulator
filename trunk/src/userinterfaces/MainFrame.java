@@ -68,6 +68,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         frequencyTextField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        saveButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         startButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
@@ -135,11 +136,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Time Stamp Position:");
 
-        timeStampComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Beginning", "End" }));
+        timeStampComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Beginning", "End", "None" }));
 
         jLabel5.setText("Frequency:");
 
         jLabel6.setText("Hz");
+
+        saveButton.setText("Save");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -149,6 +152,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(saveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
                         .addComponent(advanceButton)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -213,7 +218,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(advanceButton)
-                    .addComponent(jButton1)))
+                    .addComponent(jButton1)
+                    .addComponent(saveButton)))
         );
 
         startButton.setText("Start");
@@ -348,21 +354,21 @@ public class MainFrame extends javax.swing.JFrame {
         timeStampRadioButton.setSelected(true);
 
         jLabel4.setEnabled(true);
-        timeStampComboBox.setEnabled(true);
+
         jLabel5.setEnabled(false);
         frequencyTextField.setEnabled(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void timeStampRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeStampRadioButtonActionPerformed
         jLabel4.setEnabled(true);
-        timeStampComboBox.setEnabled(true);
+
         jLabel5.setEnabled(false);
         frequencyTextField.setEnabled(false);
     }//GEN-LAST:event_timeStampRadioButtonActionPerformed
 
     private void frequencyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frequencyRadioButtonActionPerformed
         jLabel4.setEnabled(false);
-        timeStampComboBox.setEnabled(false);
+
         jLabel5.setEnabled(true);
         frequencyTextField.setEnabled(true);
     }//GEN-LAST:event_frequencyRadioButtonActionPerformed
@@ -424,7 +430,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
 
         try {
-            
+
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
             simdriver.start();
         } catch (SimulatorException ex) {
@@ -442,11 +448,23 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private byte getTimeStampPosition() {
-        return (timeStampComboBox.getSelectedIndex() == 0) ? Property.TimeStampPosition_Begin : Property.TimeStampPosition_End;
+        switch (timeStampComboBox.getSelectedIndex()) {
+            case 0:
+                return Property.TimeStampPosition_Begin;
+            case 1:
+                return Property.TimeStampPosition_End;
+            case 2:
+                return 0;
+            default:
+                return Property.TimeStampPosition_Begin;
+        }
+
     }
 
     private int getFrequency() {
-        if(!frequencyTextField.isEnabled())return -1;
+        if (!frequencyTextField.isEnabled()) {
+            return -1;
+        }
         int fre = 0;
         try {
             fre = Integer.parseInt(frequencyTextField.getText().trim());
@@ -501,6 +519,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton saveButton;
     private javax.swing.JComboBox sensorComboBox;
     private javax.swing.JButton startButton;
     private javax.swing.JButton stopButton;
