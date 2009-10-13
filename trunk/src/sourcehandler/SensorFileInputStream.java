@@ -22,7 +22,6 @@ import simulatorexception.SimulatorException;
  */
 public class SensorFileInputStream {
 
-   
     private String filePath;
     private byte timeStampPosition; // indicate the position of time stamp in source file
     private byte outputByteOrder; // low-high or high-low
@@ -105,6 +104,8 @@ public class SensorFileInputStream {
                 }
                 sensorPacket.setPacketData(temp, 0, temp.length);
             }
+        } catch (NumberFormatException e) {
+            throw new SimulatorException("Error 012: Wrong time stamp position");
         } catch (IOException ex) {
             throw new SimulatorException("Error 002: File Reading Exception");
             // return null;

@@ -21,6 +21,7 @@ public class SimulatorException extends Exception {
      * Error 009: Source file is empty
      * Error 010: Unknown transmission mode
      * Error 011: Desired frequency can not be achieved
+     * Error 012: Wrong time stamp position
      * @param msg
      */
     public SimulatorException(String msg) {
