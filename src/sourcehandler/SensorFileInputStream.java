@@ -22,13 +22,7 @@ import simulatorexception.SimulatorException;
  */
 public class SensorFileInputStream {
 
-    public static final byte TimeStampPosition_Begin = (byte) 0;
-    public static final byte TimeStampPosition_End = (byte) 1;
-    public static final byte ByteOrder_HighLow = (byte) 0;
-    public static final byte ByteOrder_LowHigh = (byte) 1;
-    public static final int DataFormat_Short = 2;
-    public static final int DataFormat_Integer = 4;
-    public static final int DataFormat_Long = 8;
+   
     private String filePath;
     private byte timeStampPosition; // indicate the position of time stamp in source file
     private byte outputByteOrder; // low-high or high-low
@@ -66,17 +60,17 @@ public class SensorFileInputStream {
                 StringTokenizer st = new StringTokenizer(lineString);
                 tokenCounts = st.countTokens();
                 toCount = 0;
-                byteCount = (timeStampPosition == TimeStampPosition_Begin ? toCount - 1 : toCount);
+                byteCount = (timeStampPosition == Property.TimeStampPosition_Begin ? toCount - 1 : toCount);
                 sensorPacket = new SensorPacket();
                 byte[] temp = new byte[(tokenCounts - 1) * dataUnitFormat];
                 while (st.hasMoreTokens()) {
-                    if (toCount == 0 && timeStampPosition == TimeStampPosition_Begin) {
+                    if (toCount == 0 && timeStampPosition == Property.TimeStampPosition_Begin) {
                         sensorPacket.setTimeStamp(Long.parseLong(st.nextToken()));
-                    } else if (toCount == tokenCounts - 1 && timeStampPosition == TimeStampPosition_End) {
+                    } else if (toCount == tokenCounts - 1 && timeStampPosition == Property.TimeStampPosition_End) {
                         sensorPacket.setTimeStamp(Long.parseLong(st.nextToken()));
                     } else {
                         switch (dataUnitFormat) {
-                            case DataFormat_Short:
+                            case Property.DataFormat_Short:
                                 try {
                                     System.arraycopy(shortToBinary(Short.parseShort(st.nextToken()), outputByteOrder), 0, temp, byteCount * dataUnitFormat, dataUnitFormat);
                                 } catch (NumberFormatException e) {
@@ -84,7 +78,7 @@ public class SensorFileInputStream {
                                     System.arraycopy(shortToBinary(Short.parseShort("0"), outputByteOrder), 0, temp, byteCount * dataUnitFormat, dataUnitFormat);
                                 }
                                 break;
-                            case DataFormat_Integer:
+                            case Property.DataFormat_Integer:
                                 try {
                                     System.arraycopy(intToBinary(Integer.parseInt(st.nextToken()), outputByteOrder), 0, temp, byteCount * dataUnitFormat, dataUnitFormat);
                                 } catch (NumberFormatException e) {
@@ -93,7 +87,7 @@ public class SensorFileInputStream {
                                 }
 
                                 break;
-                            case DataFormat_Long:
+                            case Property.DataFormat_Long:
                                 try {
                                     System.arraycopy(longToBinary(Long.parseLong(st.nextToken()), outputByteOrder), 0, temp, byteCount * dataUnitFormat, dataUnitFormat);
                                 } catch (NumberFormatException e) {
@@ -181,11 +175,11 @@ public class SensorFileInputStream {
      */
     private byte[] shortToBinary(short value, int byteorder) {
         switch (byteorder) {
-            case SensorFileInputStream.ByteOrder_HighLow:
+            case Property.ByteOrder_HighLow:
                 return new byte[]{
                             (byte) (value >>> 8), (byte) (value & 0xFF)
                         };
-            case SensorFileInputStream.ByteOrder_LowHigh:
+            case Property.ByteOrder_LowHigh:
                 return new byte[]{
                             (byte) (value & 0xFF), (byte) (value >>> 8)
                         };
@@ -203,11 +197,11 @@ public class SensorFileInputStream {
      */
     private byte[] intToBinary(int value, int byteorder) {
         switch (byteorder) {
-            case SensorFileInputStream.ByteOrder_HighLow:
+            case Property.ByteOrder_HighLow:
                 return new byte[]{
                             (byte) (value >>> 24), (byte) (value >> 16 & 0xFF), (byte) (value >> 8 & 0xff), (byte) (value & 0xff)
                         };
-            case SensorFileInputStream.ByteOrder_LowHigh:
+            case Property.ByteOrder_LowHigh:
                 return new byte[]{
                             (byte) (value & 0xff), (byte) (value >> 8 & 0xff), (byte) (value >> 16 & 0xFF), (byte) (value >>> 24)
                         };
@@ -225,12 +219,12 @@ public class SensorFileInputStream {
     private byte[] longToBinary(long value, int byteorder) {
 
         switch (byteorder) {
-            case SensorFileInputStream.ByteOrder_HighLow:
+            case Property.ByteOrder_HighLow:
                 return new byte[]{
                             (byte) (value >>> 56), (byte) (value >> 48 & 0xFF), (byte) (value >> 40 & 0xff), (byte) (value >> 32 & 0xff),
                             (byte) (value >> 24 & 0xff), (byte) (value >> 16 & 0xFF), (byte) (value >> 8 & 0xff), (byte) (value & 0xff)
                         };
-            case SensorFileInputStream.ByteOrder_LowHigh:
+            case Property.ByteOrder_LowHigh:
                 return new byte[]{
                             (byte) (value & 0xff), (byte) (value >> 8 & 0xff), (byte) (value >> 16 & 0xFF), (byte) (value >> 24 & 0xff),
                             (byte) (value >> 32 & 0xff), (byte) (value >> 40 & 0xff), (byte) (value >> 48 & 0xFF), (byte) (value >>> 56)

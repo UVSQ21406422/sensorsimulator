@@ -16,30 +16,32 @@ import sourcehandler.SensorFileInputStream;
  */
 public class SimulatorDriver {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        //String filepath = "C:/Documents and Settings/chen/Desktop/tempPhoto/rawSeat.txt";
-        String filepath = "D:/Study/WiTilt Simulator Project/testdata/short.txt";
-        SimulatorConnection simCon = new SimulatorConnection();
-        Controller controller = null;
-        Property wtPro = null;
-        try {
-            //  wtPro = new Property();
-            //wtPro = new Property(filepath);
-            wtPro = new Property(filepath, Property.TransMode_Frequency, SensorFileInputStream.TimeStampPosition_End, 100, Property.SensorType_WiTiltSensor);
-        } catch (SimulatorException ex) {
-            System.out.println(ex.getMessage());
-            return;
-        }
-        try {
-            simCon.startSppService();
-            controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream());
-            controller.open();
-        } catch (SimulatorException ex) {
-            System.out.println(ex.getMessage());
-            return;
-        }
+    private String filepath;
+    private SimulatorConnection simCon;
+    private Controller controller;
+    private Property wtPro;
+
+    public SimulatorDriver() throws SimulatorException {
+        //filepath = "D:/Study/WiTilt Simulator Project/testdata/short.txt";
+        //filepath = "C:/Documents and Settings/chen/Desktop/tempPhoto/rawSeat.txt";
+        wtPro = new Property();
+
+    }
+
+    public void start() throws SimulatorException {
+        simCon = new SimulatorConnection();
+        simCon.startSppService();
+        controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream());
+        controller.open();
+
+    }
+
+    public void setGeneralProperties(String path, byte mode, byte timestampposition, int fre, String sensortype) throws SimulatorException {
+        wtPro.setGeneralProperties(path, mode, timestampposition, fre, sensortype);
+
+    }
+
+    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat,  int channelnumber,  double frePrecision) throws SimulatorException {
+        wtPro.setAdvanceProperties(outputbyteorder, dataunitformat,channelnumber, frePrecision);
     }
 }
