@@ -17,20 +17,27 @@ public class Property {
     public static final byte TransMode_Frequency = (byte) 2;
     public static final int TransFrequency_MaxFrequency = 500;
     public static final int TransFrequency_MinFrequency = 1;
+    public static final byte TimeStampPosition_Begin = (byte) 0;
+    public static final byte TimeStampPosition_End = (byte) 1;
+    public static final byte ByteOrder_HighLow = (byte) 0;
+    public static final byte ByteOrder_LowHigh = (byte) 1;
+    public static final int DataFormat_Short = 2;
+    public static final int DataFormat_Integer = 4;
+    public static final int DataFormat_Long = 8;
     /**
      * default settings
      */
     private final String defaultFilePath = "";
     private final byte defaultTransMode = TransMode_TimeStamp;
-    private final byte defaultTimeStampPosition = sourcehandler.SensorFileInputStream.TimeStampPosition_End;
+    private final byte defaultTimeStampPosition = TimeStampPosition_End;
     private final int defaultTransFrequency = 100;
     private final String defaultSensorType = SensorType_WiTiltSensor;
-    private final byte defaultOutPutByteOrder = sourcehandler.SensorFileInputStream.ByteOrder_HighLow;
-    private final int defaultDataUnitFormat = sourcehandler.SensorFileInputStream.DataFormat_Short;
+    private final byte defaultOutPutByteOrder = ByteOrder_HighLow;
+    private final int defaultDataUnitFormat = DataFormat_Short;
     private final int defaultBufferSize = 50;
     private final int defaultChannelNumber = 3;
     private final int defaultMaxSimultaneouslyPacketNo = 6;
-    private final int defaultIntervalUnit = 1;
+    private final int defaultIntervalUnit = 15;
     private final double defaultFrePrecision = 0.12;
     /**
      * General Properties
@@ -45,15 +52,15 @@ public class Property {
      */
     private byte outputByteOrder; // low-high or high-low, default: High_Low
     private int dataUnitFormat; //how many bytes to represent one data value, short(2), int(4) or long(8), default: short.
-    private int bufferSize; // the size of transmit buffer, default: 50
     private int channelNumber; //number of active channels, default: 3
-    private int maxSimultaneouslyPacketNo; // maximum number of packet in one time frame, default 6
-    private int IntervalUnit; // the minimum interval between two transmission in milliseconds (the minimum time system can sleep)
     private double frePrecision;// frequency precision
     /**
-     * frequencyPrecision, from class: Frequency
+     * Hidden properties
      */
-    ////////////////////////////////hidden parameters
+    private int bufferSize; // the size of transmit buffer, default: 50
+    private int maxSimultaneouslyPacketNo; // maximum number of packet in one time frame, default 6
+    private int IntervalUnit; // the minimum interval between two transmission in milliseconds (the minimum time system can sleep)
+    ///////////////////////////////////////////////////
     private Frequency frequencyObj = null;
 
     /**
@@ -62,135 +69,104 @@ public class Property {
      * @param timestampposition, the position of time stamp in source file
      * @param sensortype, the type of sensor
      */
-    public Property(String path, byte mode, byte timestampposition, int fre, String sensortype) throws SimulatorException {
+    public Property(String path, byte mode, byte timestampposition, int fre, String sensortype) {
 
         filePath = path;
         sensorType = sensortype;
         timeStampPosition = timestampposition;
         transMode = mode;
-        if (transMode == TransMode_Frequency) {
-            transFrequency = fre;
-            if (transFrequency < TransFrequency_MinFrequency) {
-                transFrequency = TransFrequency_MinFrequency;
-                System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
-            }
-            if (transFrequency > TransFrequency_MaxFrequency) {
-                transFrequency = TransFrequency_MaxFrequency;
-                System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
-            }
-            IntervalUnit = defaultIntervalUnit;
-            frePrecision = defaultFrePrecision;
-            frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
-            System.out.println("Transmit Mode: Frequency");
-            System.out.println("Desired Frequency: " + fre);
-            System.out.println("Real Frequency: " + getRealFrequency());
-            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
-        } else if (transMode == TransMode_TimeStamp) {
-            System.out.println("Transmit Mode: Time Stamp");
+
+        transFrequency = fre;
+        if (transFrequency < TransFrequency_MinFrequency) {
+            transFrequency = TransFrequency_MinFrequency;
+            System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
         }
-        if (sensorType.equals(SensorType_WiTiltSensor)) {
-            outputByteOrder = defaultOutPutByteOrder;
-            dataUnitFormat = defaultDataUnitFormat;
-            bufferSize = defaultBufferSize;
-            channelNumber = defaultChannelNumber;
-            maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        if (transFrequency > TransFrequency_MaxFrequency) {
+            transFrequency = TransFrequency_MaxFrequency;
+            System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
         }
+        IntervalUnit = defaultIntervalUnit;
+        frePrecision = defaultFrePrecision;
+
+        outputByteOrder = defaultOutPutByteOrder;
+        dataUnitFormat = defaultDataUnitFormat;
+        bufferSize = defaultBufferSize;
+        channelNumber = defaultChannelNumber;
+        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
     }
 
     /**
      * 
      * @param path the location of source file
      */
-    public Property(String path) throws SimulatorException {
+    public Property(String path) {
         filePath = path;
         sensorType = defaultSensorType;
         timeStampPosition = defaultTimeStampPosition;
         transMode = defaultTransMode;
-        if (transMode == TransMode_Frequency) {
-            transFrequency = defaultTransFrequency;
-            if (transFrequency < TransFrequency_MinFrequency) {
-                transFrequency = TransFrequency_MinFrequency;
-            }
-            if (transFrequency > TransFrequency_MaxFrequency) {
-                transFrequency = TransFrequency_MaxFrequency;
-            }
-            IntervalUnit = defaultIntervalUnit;
-            frePrecision = defaultFrePrecision;
-            frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
-            System.out.println("Transmit Mode: Frequency");
-            System.out.println("Desired Frequency: " + defaultTransFrequency);
-            System.out.println("Real Frequency: " + getRealFrequency());
-            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
-        } else if (transMode == TransMode_TimeStamp) {
-            System.out.println("Transmit Mode: Time Stamp");
+
+        transFrequency = defaultTransFrequency;
+        if (transFrequency < TransFrequency_MinFrequency) {
+            transFrequency = TransFrequency_MinFrequency;
         }
-        if (sensorType.equals(SensorType_WiTiltSensor)) {
-            outputByteOrder = defaultOutPutByteOrder;
-            dataUnitFormat = defaultDataUnitFormat;
-            bufferSize = defaultBufferSize;
-            channelNumber = defaultChannelNumber;
-            maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        if (transFrequency > TransFrequency_MaxFrequency) {
+            transFrequency = TransFrequency_MaxFrequency;
         }
+        IntervalUnit = defaultIntervalUnit;
+        frePrecision = defaultFrePrecision;
+        // frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
+        outputByteOrder = defaultOutPutByteOrder;
+        dataUnitFormat = defaultDataUnitFormat;
+        bufferSize = defaultBufferSize;
+        channelNumber = defaultChannelNumber;
+        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
     }
 
-    public Property() throws SimulatorException {
+    public Property() {
 
         filePath = defaultFilePath;
         sensorType = defaultSensorType;
         timeStampPosition = defaultTimeStampPosition;
         transMode = defaultTransMode;
-        if (transMode == TransMode_Frequency) {
 
-            transFrequency = defaultTransFrequency;
-            if (transFrequency < TransFrequency_MinFrequency) {
-                transFrequency = TransFrequency_MinFrequency;
-            }
-            if (transFrequency > TransFrequency_MaxFrequency) {
-                transFrequency = TransFrequency_MaxFrequency;
-            }
-            IntervalUnit = defaultIntervalUnit;
-            frePrecision = defaultFrePrecision;
-            frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
-            System.out.println("Transmit Mode: Frequency");
-            System.out.println("Desired Frequency: " + defaultTransFrequency);
-            System.out.println("Real Frequency: " + getRealFrequency());
-            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
-        } else if (transMode == TransMode_TimeStamp) {
-            System.out.println("Transmit Mode: Time Stamp");
+        transFrequency = defaultTransFrequency;
+        if (transFrequency < TransFrequency_MinFrequency) {
+            transFrequency = TransFrequency_MinFrequency;
         }
-        if (sensorType.equals(SensorType_WiTiltSensor)) {
-            outputByteOrder = defaultOutPutByteOrder;
-            dataUnitFormat = defaultDataUnitFormat;
-            bufferSize = defaultBufferSize;
-            channelNumber = defaultChannelNumber;
-            maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        if (transFrequency > TransFrequency_MaxFrequency) {
+            transFrequency = TransFrequency_MaxFrequency;
         }
+        IntervalUnit = defaultIntervalUnit;
+        frePrecision = defaultFrePrecision;
+        outputByteOrder = defaultOutPutByteOrder;
+        dataUnitFormat = defaultDataUnitFormat;
+        bufferSize = defaultBufferSize;
+        channelNumber = defaultChannelNumber;
+        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
     }
 
-    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int buffersize, int channelnumber, int maxsimpacno, int minSleepUnit, int frePrecision) throws SimulatorException {
+    public void setHiddenProperties(int buffersize, int maxsimpacno, int minSleepUnit) {
+        if (minSleepUnit != IntervalUnit) {
+            IntervalUnit = minSleepUnit;
+            // frequencyObj = new Frequency(transFrequency, IntervalUnit, this.frePrecision);
+        }
+        bufferSize = buffersize;
+        maxSimultaneouslyPacketNo = maxsimpacno;
+    }
 
-        if (transMode == TransMode_Frequency) {
-            if (minSleepUnit != IntervalUnit || frePrecision != this.frePrecision) {
-                IntervalUnit = minSleepUnit;
-                this.frePrecision = frePrecision;
-                frequencyObj = new Frequency(transFrequency, IntervalUnit, this.frePrecision);
-            }
-            System.out.println("Real Frequency: " + getRealFrequency());
-            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
-        } else if (transMode == TransMode_TimeStamp) {
-            System.out.println("Transmit Mode: Time Stamp");
+    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int channelnumber, double frePrecision) {
+        if (frePrecision != this.frePrecision) {
+            this.frePrecision = frePrecision;
         }
         outputByteOrder = outputbyteorder;
         dataUnitFormat = dataunitformat;
-        bufferSize = buffersize;
         channelNumber = channelnumber;
-        maxSimultaneouslyPacketNo = maxsimpacno;
+        System.out.println("Advance properties have been set");
     }
 
     public void setGeneralProperties(String path, byte mode, byte timestampposition, int fre, String sensortype) throws SimulatorException {
         filePath = path;
         sensorType = sensortype;
-        timeStampPosition = timestampposition;
         transMode = mode;
         if (transMode == TransMode_Frequency) {
             transFrequency = fre;
@@ -202,24 +178,17 @@ public class Property {
                 transFrequency = TransFrequency_MaxFrequency;
                 System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
             }
-            IntervalUnit = defaultIntervalUnit;
-            frePrecision = defaultFrePrecision;
             frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
+            //frequencyObj.calculateFrequency(transFrequency);
             System.out.println("Transmit Mode: Frequency");
             System.out.println("Desired Frequency: " + fre);
             System.out.println("Real Frequency: " + getRealFrequency());
             System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
         } else if (transMode == TransMode_TimeStamp) {
+            timeStampPosition = timestampposition;
             System.out.println("Transmit Mode: Time Stamp");
         }
 
-        if (sensorType.equals(SensorType_WiTiltSensor)) {
-            outputByteOrder = defaultOutPutByteOrder;
-            dataUnitFormat = defaultDataUnitFormat;
-            bufferSize = defaultBufferSize;
-            channelNumber = defaultChannelNumber;
-            maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
-        }
     }
 
     /**
@@ -233,7 +202,7 @@ public class Property {
         transFrequency = defaultTransFrequency;
         IntervalUnit = defaultIntervalUnit;
         frePrecision = defaultFrePrecision;
-        frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
+        // frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
         if (sensorType.equals(SensorType_WiTiltSensor)) {
             outputByteOrder = defaultOutPutByteOrder;
             dataUnitFormat = defaultDataUnitFormat;
@@ -256,13 +225,6 @@ public class Property {
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
             System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
-        }
-        if (transMode == TransMode_Frequency) {
-            frequencyObj.calculateFrequency(transFrequency);
-            System.out.println("Transmit Mode: Frequency");
-            System.out.println("Desired Frequency: " + fre);
-            System.out.println("Real Frequency: " + getRealFrequency());
-            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
         }
     }
 
