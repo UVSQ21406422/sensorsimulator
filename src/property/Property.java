@@ -17,10 +17,11 @@ public class Property {
     public static final byte TransMode_Frequency = (byte) 2;
     public static final int TransFrequency_MaxFrequency = 500;
     public static final int TransFrequency_MinFrequency = 1;
-    public static final byte TimeStampPosition_Begin = (byte) 0;
-    public static final byte TimeStampPosition_End = (byte) 1;
-    public static final byte ByteOrder_HighLow = (byte) 0;
-    public static final byte ByteOrder_LowHigh = (byte) 1;
+    public static final byte TimeStampPosition_Begin = (byte) 1;
+    public static final byte TimeStampPosition_End = (byte) 2;
+    public static final byte TimeStampPosition_None = (byte) 3;
+    public static final byte ByteOrder_HighLow = (byte) 1;
+    public static final byte ByteOrder_LowHigh = (byte) 2;
     public static final int DataFormat_Short = 2;
     public static final int DataFormat_Integer = 4;
     public static final int DataFormat_Long = 8;
