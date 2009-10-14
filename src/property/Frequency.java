@@ -47,7 +47,7 @@ public class Frequency {
             if (d % lcm == 0) {
                 continue;
             }
-            freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / (double) d) / (double) 100;          
+            freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / (double) d) / (double) 100;
             i++;
         }
     }
@@ -79,12 +79,12 @@ public class Frequency {
         for (; i < freTable.length; i++) {
             mod = (double) fre % freTable[i];
             if (mod < (double) fre * frePrecision) {
-                sleepInterval = ((int) (millisecondsPerSecond / freTable[i]) / lcm + 1 + i) * minSleepUnit;
+                sleepInterval = ((int) Math.round(millisecondsPerSecond / freTable[i]) / lcm + 1 + i) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]);
                 realFrequency = packetsPerTrans * freTable[i];
                 return;
             } else if (Math.abs(freTable[i] - mod) < (double) fre * frePrecision) {
-                sleepInterval = ((int) (millisecondsPerSecond / freTable[i]) / lcm + 1 + i) * minSleepUnit;
+                sleepInterval = ((int) Math.round(millisecondsPerSecond / freTable[i]) / lcm + 1 + i) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]) + 1;
                 realFrequency = packetsPerTrans * freTable[i];
                 return;
