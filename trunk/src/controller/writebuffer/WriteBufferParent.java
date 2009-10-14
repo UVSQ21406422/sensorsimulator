@@ -17,18 +17,15 @@ import sourcehandler.SensorPacket;
  */
 public abstract class WriteBufferParent extends Thread {
 
-    protected int bufferSize;
     protected int count;
     protected boolean stop;
     protected int maxSimultaneouslyPacketNo;
-    protected int channelNumber;
     protected int packetSize; //the size of one wiTilt packet
     protected int maxSize;  // the maximum size of tempData
     protected int headerSize;
     protected int tailSize;
-    protected int transFrequency;
     protected byte[] tempData;
-    protected byte transMode; // transmission mode
+    protected Property wtPro;
     protected SensorFileInputStream fileInputStream;
     protected TransmissionBuffer buffer;
 
@@ -37,20 +34,14 @@ public abstract class WriteBufferParent extends Thread {
         stop = false;
         this.buffer = buffer;
         fileInputStream = in;
-        bufferSize = p.getBufferSize();
-        channelNumber = p.getChannelNumber();
-        transMode = p.getTransMode();
-        if (transMode == Property.TransMode_TimeStamp) {
+        wtPro = p;
+        if (wtPro.getTransMode() == Property.TransMode_TimeStamp) {
             //in time stamp mode, a limit is set for the number of packets would be transmit in one transmission
-            maxSimultaneouslyPacketNo = p.getMaxSimultaneouslyPacketNo();
-        } else if (transMode == Property.TransMode_Frequency) {
-            transFrequency = p.getFrequency();
+            maxSimultaneouslyPacketNo = wtPro.getMaxSimultaneouslyPacketNo();
+        } else if (wtPro.getTransMode() == Property.TransMode_Frequency) {
             //in frequency mode, the number of packets in one transmission is required by the calculation result from desired frequency
-            maxSimultaneouslyPacketNo = p.getPacketsPerTrans();
+            maxSimultaneouslyPacketNo = wtPro.getPacketsPerTrans();
         }
-        // packetSize = channelNumber * 2 + 5;
-        // maxSize = packetSize * maxSimultaneouslyPacketNo;
-        // tempData = new byte[maxSize];
     }
 
     /**
@@ -72,23 +63,24 @@ public abstract class WriteBufferParent extends Thread {
 
     @Override
     public void run() {
+        //define the size of the packet
         initPacketSize();
+
         long currTime = -1, prevTime = -1;
         int repeatedPacketNo = 0;  // how many packet in one buffer element
         int offset = 0;  // offset in tempData
+        int bufferSize = wtPro.getBufferSize();
+        byte transMode = wtPro.getTransMode();
         boolean firstLoop = true; // after the first round to go through the whole buffer, switch to false       
         boolean rollOver = false;
         SensorPacket sp = null;
         System.out.println("Loading...");
+        
         while (!stop) {
             while (!stop && count < bufferSize) {
 
                 //packet header and sample number
                 fillPacketHeader(offset);
-                /* tempData[0 + offset] = (byte) 35; //"#"
-                tempData[1 + offset] = (byte) 64; //"@"
-                tempData[2 + offset] = (byte) 0x00;
-                tempData[3 + offset] = (byte) 0x01;*/
 
                 try {
                     try {
@@ -146,7 +138,7 @@ public abstract class WriteBufferParent extends Thread {
                             TaskObject to = new TaskObject(tempData, 0, maxSimultaneouslyPacketNo * packetSize, -1);
 
                             rollOver = false;
-                            
+
                             //put it into the buffer
                             buffer.setBufferElementAt(count, to);
 

@@ -208,7 +208,7 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         try {
-            simdriver.setAdvanceProperties(getByteOrder(), getDataUnitFormat(), getChannelNumber(), getFrequencyMargin());
+            simdriver.setAdvanceProperties(getByteOrder(), getDataUnitFormat(), getChannelNumber(), getFrequencyMargin(),Property.HeaderContent_None);
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }

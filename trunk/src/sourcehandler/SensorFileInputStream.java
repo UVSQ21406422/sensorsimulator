@@ -61,7 +61,8 @@ public class SensorFileInputStream {
                 toCount = 0;
                 byteCount = (timeStampPosition == Property.TimeStampPosition_Begin ? toCount - 1 : toCount);
                 sensorPacket = new SensorPacket();
-                byte[] temp = new byte[(tokenCounts - 1) * dataUnitFormat];
+                int tempSize = timeStampPosition == Property.TimeStampPosition_None ? tokenCounts * dataUnitFormat : (tokenCounts - 1) * dataUnitFormat;
+                byte[] temp = new byte[tempSize];
                 while (st.hasMoreTokens()) {
                     if (toCount == 0 && timeStampPosition == Property.TimeStampPosition_Begin) {
                         sensorPacket.setTimeStamp(Long.parseLong(st.nextToken()));
@@ -98,9 +99,11 @@ public class SensorFileInputStream {
                             default:
                                 break;
                         }
+
                     }
-                    toCount++;
                     byteCount++;
+                    toCount++;
+
                 }
                 sensorPacket.setPacketData(temp, 0, temp.length);
             }
