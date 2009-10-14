@@ -29,6 +29,7 @@ public class SimulatorDriver {
     }
 
     public void start() throws SimulatorException {
+        wtPro.initFrequencyObj();
         simCon = new SimulatorConnection();
         simCon.startSppService();
         controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream());
@@ -41,7 +42,7 @@ public class SimulatorDriver {
 
     }
 
-    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat,  int channelnumber,  double frePrecision) throws SimulatorException {
-        wtPro.setAdvanceProperties(outputbyteorder, dataunitformat,channelnumber, frePrecision);
+    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int channelnumber, double frePrecision) throws SimulatorException {
+        wtPro.setAdvanceProperties(outputbyteorder, dataunitformat, channelnumber, frePrecision);
     }
 }

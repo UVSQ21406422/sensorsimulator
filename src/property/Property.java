@@ -25,6 +25,10 @@ public class Property {
     public static final int DataFormat_Short = 2;
     public static final int DataFormat_Integer = 4;
     public static final int DataFormat_Long = 8;
+    //////////////////////////////////////////////
+    private final byte FreObjReConstruct = (byte) 1;
+    private final byte FreReCalculate = (byte) 2;
+    private final byte FreObjNoAction = (byte) 3;
     /**
      * default settings
      */
@@ -179,17 +183,10 @@ public class Property {
                 transFrequency = TransFrequency_MaxFrequency;
                 System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
             }
-            frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
             //frequencyObj.calculateFrequency(transFrequency);
-            System.out.println("Transmit Mode: Frequency");
-            System.out.println("Desired Frequency: " + fre);
-            System.out.println("Real Frequency: " + getRealFrequency());
-            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
-        } else if (transMode == TransMode_TimeStamp) {
-            timeStampPosition = timestampposition;
-            System.out.println("Transmit Mode: Time Stamp");
-        }
 
+        }
+        timeStampPosition = timestampposition;
     }
 
     /**
@@ -210,6 +207,29 @@ public class Property {
             bufferSize = defaultBufferSize;
             channelNumber = defaultChannelNumber;
             maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        }
+    }
+
+    public void initFrequencyObj() throws SimulatorException {
+        switch (isFrequencyModified()) {
+            case FreObjReConstruct:
+                System.out.println(transFrequency + " " + IntervalUnit + " " + frePrecision);
+                frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
+                break;
+            case FreReCalculate:
+                frequencyObj.calculateFrequency(transFrequency);
+
+                break;
+            default:
+                break;
+        }
+        if (transMode == TransMode_Frequency) {
+            System.out.println("Transmit Mode: Frequency");
+            System.out.println("Desired Frequency: " + transFrequency);
+            System.out.println("Real Frequency: " + getRealFrequency());
+            System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
+        } else if (transMode == TransMode_TimeStamp) {
+            System.out.println("Transmit Mode: Time Stamp");
         }
     }
 
@@ -336,5 +356,22 @@ public class Property {
 
     public byte getDefaultTransMode() {
         return defaultTransMode;
+    }
+
+    /**
+     * decide if frequency object has to be rebuild or the frequency table has to be re-caculated
+     * @return 
+     */
+    private byte isFrequencyModified() {
+        if (frequencyObj == null) {
+            return FreObjReConstruct;
+        } else if (frequencyObj.getMinSleepUnit() != IntervalUnit) {
+            return FreObjReConstruct;
+        } else if (frequencyObj.getDesiredFrequency() != transFrequency || frequencyObj.getFrePrecision() != frePrecision) {
+            return FreReCalculate;
+        } else {
+            return FreObjNoAction;
+        }
+
     }
 }

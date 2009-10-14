@@ -454,9 +454,9 @@ public class MainFrame extends javax.swing.JFrame {
             case 1:
                 return Property.TimeStampPosition_End;
             case 2:
-                return 0;
+                return Property.TimeStampPosition_None;
             default:
-                return Property.TimeStampPosition_Begin;
+                return 0;
         }
 
     }

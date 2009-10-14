@@ -16,6 +16,7 @@ public class Frequency {
     private int packetsPerTrans; // number of packets to be transmitted in one transmission
     private int gcd;
     private int lcm;
+    private int desiredFrequency;
     private double[] freTable; // a table store all
     private double realFrequency;
 
@@ -24,8 +25,9 @@ public class Frequency {
         frePrecision = precision;
         gcd = getGCD(minSleepUnit, exception);
         lcm = minSleepUnit * exception / gcd;
+        desiredFrequency = fre;
         constructTable();
-        calculateFrequency(fre);
+        calculateFrequency(desiredFrequency);
     }
 
     /**
@@ -33,7 +35,7 @@ public class Frequency {
      */
     private void constructTable() {
         freTable = null;
-        
+
         //calculate the size of the array, the multiple of gcd must be eliminated
         int size = millisecondsPerSecond / minSleepUnit - millisecondsPerSecond / lcm;
 
@@ -45,7 +47,7 @@ public class Frequency {
             if (d % lcm == 0) {
                 continue;
             }
-            freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / d) / 100;          
+            freTable[i] = (double) Math.round((double) millisecondsPerSecond * 100 / (double) d) / (double) 100;          
             i++;
         }
     }
@@ -71,17 +73,18 @@ public class Frequency {
      * @param fre: desired frequency
      */
     protected void calculateFrequency(int fre) throws SimulatorException {
+        desiredFrequency = fre;
         int i = 0;
         double mod = 0;
         for (; i < freTable.length; i++) {
             mod = (double) fre % freTable[i];
             if (mod < (double) fre * frePrecision) {
-                sleepInterval = (i + 1) * minSleepUnit % lcm == 0 ? (i+2)*minSleepUnit:(i + 1) * minSleepUnit;
+                sleepInterval = ((int) (millisecondsPerSecond / freTable[i]) / lcm + 1 + i) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]);
                 realFrequency = packetsPerTrans * freTable[i];
                 return;
             } else if (Math.abs(freTable[i] - mod) < (double) fre * frePrecision) {
-                sleepInterval = (i + 1) * minSleepUnit % lcm == 0 ? (i+2)*minSleepUnit:(i + 1) * minSleepUnit;
+                sleepInterval = ((int) (millisecondsPerSecond / freTable[i]) / lcm + 1 + i) * minSleepUnit;
                 packetsPerTrans = (int) (fre / freTable[i]) + 1;
                 realFrequency = packetsPerTrans * freTable[i];
                 return;
@@ -100,5 +103,17 @@ public class Frequency {
 
     protected double getRealFrequency() {
         return realFrequency;
+    }
+
+    protected double getFrePrecision() {
+        return frePrecision;
+    }
+
+    protected int getMinSleepUnit() {
+        return minSleepUnit;
+    }
+
+    public int getDesiredFrequency() {
+        return desiredFrequency;
     }
 }
