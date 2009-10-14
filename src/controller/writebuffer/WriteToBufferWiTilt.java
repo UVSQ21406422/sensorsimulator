@@ -21,7 +21,7 @@ public class WriteToBufferWiTilt extends WriteBufferParent {
     protected void initPacketSize() {
         headerSize = 4;
         tailSize = 1;
-        packetSize = channelNumber * 2 + headerSize + tailSize;
+        packetSize = wtPro.getChannelNumber() * 2 + headerSize + tailSize;
         maxSize = packetSize * maxSimultaneouslyPacketNo;
         tempData = new byte[maxSize];
     }

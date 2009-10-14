@@ -25,6 +25,8 @@ public class Property {
     public static final int DataFormat_Short = 2;
     public static final int DataFormat_Integer = 4;
     public static final int DataFormat_Long = 8;
+    public static final byte HeaderContent_TimeStamp = (byte) 1;
+    public static final byte HeaderContent_None = (byte) 0;
     //////////////////////////////////////////////
     private final byte FreObjReConstruct = (byte) 1;
     private final byte FreReCalculate = (byte) 2;
@@ -42,8 +44,9 @@ public class Property {
     private final int defaultBufferSize = 50;
     private final int defaultChannelNumber = 3;
     private final int defaultMaxSimultaneouslyPacketNo = 6;
-    private final int defaultIntervalUnit = 15;
+    private final int defaultIntervalUnit = 1;
     private final double defaultFrePrecision = 0.12;
+    private final byte defaultPacketHeaderContent = HeaderContent_None;
     /**
      * General Properties
      */
@@ -59,6 +62,7 @@ public class Property {
     private int dataUnitFormat; //how many bytes to represent one data value, short(2), int(4) or long(8), default: short.
     private int channelNumber; //number of active channels, default: 3
     private double frePrecision;// frequency precision
+    private byte packetHeaderContent;  //time stamp can be added to be part of a packet header or no header is required.
     /**
      * Hidden properties
      */
@@ -98,6 +102,7 @@ public class Property {
         bufferSize = defaultBufferSize;
         channelNumber = defaultChannelNumber;
         maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        packetHeaderContent = defaultPacketHeaderContent;
     }
 
     /**
@@ -125,6 +130,7 @@ public class Property {
         bufferSize = defaultBufferSize;
         channelNumber = defaultChannelNumber;
         maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        packetHeaderContent = defaultPacketHeaderContent;
     }
 
     public Property() {
@@ -148,6 +154,7 @@ public class Property {
         bufferSize = defaultBufferSize;
         channelNumber = defaultChannelNumber;
         maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        packetHeaderContent = defaultPacketHeaderContent;
     }
 
     public void setHiddenProperties(int buffersize, int maxsimpacno, int minSleepUnit) {
@@ -159,13 +166,14 @@ public class Property {
         maxSimultaneouslyPacketNo = maxsimpacno;
     }
 
-    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int channelnumber, double frePrecision) {
+    public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int channelnumber, double frePrecision, byte headerContent) {
         if (frePrecision != this.frePrecision) {
             this.frePrecision = frePrecision;
         }
         outputByteOrder = outputbyteorder;
         dataUnitFormat = dataunitformat;
         channelNumber = channelnumber;
+        packetHeaderContent = headerContent;
         System.out.println("Advance properties have been set");
     }
 
@@ -309,6 +317,10 @@ public class Property {
         return IntervalUnit;
     }
 
+    public byte getPacketHeaderContent() {
+        return packetHeaderContent;
+    }
+
 //////////////////////////////////Get default settings////////////////////
     public int getDefaultBufferSize() {
         return defaultBufferSize;
@@ -358,6 +370,11 @@ public class Property {
         return defaultTransMode;
     }
 
+    public byte getDefaultPacketHeaderContent() {
+        return defaultPacketHeaderContent;
+    }
+
+    ///////////////////////////other methods//////////////////////////////
     /**
      * decide if frequency object has to be rebuild or the frequency table has to be re-caculated
      * @return 
