@@ -136,7 +136,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="saveButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="145" max="32767" attributes="0"/>
+                          <EmptySpace pref="149" max="32767" attributes="0"/>
                           <Component id="advanceButton" linkSize="2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" pref="75" max="-2" attributes="0"/>
@@ -151,7 +151,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="fileNameTextField" pref="186" max="32767" attributes="0"/>
+                                  <Component id="fileNameTextField" pref="190" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="browseButton" linkSize="2" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -165,12 +165,12 @@
                                           <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="frequencyTextField" pref="66" max="32767" attributes="0"/>
+                                          <Component id="frequencyTextField" pref="70" max="32767" attributes="0"/>
                                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="1" attributes="1">
-                                          <EmptySpace pref="74" max="32767" attributes="0"/>
+                                          <EmptySpace pref="78" max="32767" attributes="0"/>
                                           <Component id="frequencyRadioButton" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                                       </Group>
