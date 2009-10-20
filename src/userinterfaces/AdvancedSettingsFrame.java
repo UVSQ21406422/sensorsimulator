@@ -28,6 +28,8 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
     public AdvancedSettingsFrame(SimulatorDriver simdriver) {
         this.simdriver = simdriver;
         initComponents();
+        loadAdvancedPropertyToFrame();
+        this.setBounds(MainFrame.windowwidth / 4, MainFrame.windowheight / 4, MainFrame.windowwidth / 2, MainFrame.windowheight / 2);
     }
 
     /** This method is called from within the constructor to
@@ -49,6 +51,8 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
         channelNumberComboBox = new javax.swing.JComboBox();
         frequencyMarginTextField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        withTimeStampComboBox = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
@@ -75,6 +79,10 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
 
         jLabel5.setText("%");
 
+        jLabel6.setText("Include Time Stamp");
+
+        withTimeStampComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No", "Yes" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -83,23 +91,29 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(byteOrderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(frequencyMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel5)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(channelNumberComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(unitFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(frequencyMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel5))
+                            .addComponent(byteOrderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(channelNumberComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(unitFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(24, 24, 24))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(withTimeStampComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(218, Short.MAX_VALUE))))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {channelNumberComboBox, unitFormatComboBox});
@@ -110,7 +124,7 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(byteOrderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(byteOrderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(unitFormatComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
@@ -120,7 +134,11 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(channelNumberComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(withTimeStampComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         okButton.setText("OK");
@@ -153,7 +171,7 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
                 .addComponent(okButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resetButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
                 .addComponent(cancelButton)
                 .addContainerGap())
         );
@@ -196,10 +214,8 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        frequencyMarginTextField.setText("");
-        byteOrderComboBox.setSelectedIndex(0);
-        channelNumberComboBox.setSelectedIndex(0);
-        unitFormatComboBox.setSelectedIndex(0);
+        simdriver.getWtPro().loadDefaultAdvance();
+        loadAdvancedPropertyToFrame();
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -208,7 +224,7 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         try {
-            simdriver.setAdvanceProperties(getByteOrder(), getDataUnitFormat(), getChannelNumber(), getFrequencyMargin(),Property.HeaderContent_None);
+            simdriver.setAdvanceProperties(getByteOrder(), getDataUnitFormat(), getChannelNumber(), getFrequencyMargin(), getHeaderContent());
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }
@@ -245,6 +261,40 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
     private int getChannelNumber() {
         return channelNumberComboBox.getSelectedIndex() + 1;
     }
+
+    private byte getHeaderContent() {
+        if (withTimeStampComboBox.getSelectedIndex() == 0) {
+            return Property.HeaderContent_None;
+        } else {
+            return Property.HeaderContent_TimeStamp;
+        }
+    }
+
+    private void loadAdvancedPropertyToFrame() {
+        if (simdriver.getWtPro().getOutputByteOrder() == Property.ByteOrder_HighLow) {
+            byteOrderComboBox.setSelectedIndex(0);
+        } else if (simdriver.getWtPro().getOutputByteOrder() == Property.ByteOrder_LowHigh) {
+            byteOrderComboBox.setSelectedIndex(1);
+        }
+
+        if (simdriver.getWtPro().getDataUnitFormat() == Property.DataFormat_Short) {
+            unitFormatComboBox.setSelectedIndex(0);
+        } else if (simdriver.getWtPro().getDataUnitFormat() == Property.DataFormat_Integer) {
+            unitFormatComboBox.setSelectedIndex(1);
+        } else if (simdriver.getWtPro().getDataUnitFormat() == Property.DataFormat_Long) {
+            unitFormatComboBox.setSelectedIndex(2);
+        }
+
+        frequencyMarginTextField.setText(Double.toString(simdriver.getWtPro().getFrePrecision() * 100));
+
+        channelNumberComboBox.setSelectedIndex(simdriver.getWtPro().getChannelNumber() - 1);
+
+        if (simdriver.getWtPro().getPacketHeaderContent() == Property.HeaderContent_None) {
+            withTimeStampComboBox.setSelectedIndex(0);
+        } else if (simdriver.getWtPro().getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
+            withTimeStampComboBox.setSelectedIndex(1);
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox byteOrderComboBox;
     private javax.swing.JButton cancelButton;
@@ -255,10 +305,12 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton okButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JComboBox unitFormatComboBox;
+    private javax.swing.JComboBox withTimeStampComboBox;
     // End of variables declaration//GEN-END:variables
 }

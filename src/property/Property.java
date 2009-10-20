@@ -4,6 +4,14 @@
  */
 package property;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import simulatorexception.SimulatorException;
 
 /**
@@ -12,6 +20,7 @@ import simulatorexception.SimulatorException;
  */
 public class Property {
 
+    public final String PropertyFile = "property";
     public static final String SensorType_WiTiltSensor = "WiTilt V 3.0";
     public static final byte TransMode_TimeStamp = (byte) 1;
     public static final byte TransMode_Frequency = (byte) 2;
@@ -71,6 +80,7 @@ public class Property {
     private int IntervalUnit; // the minimum interval between two transmission in milliseconds (the minimum time system can sleep)
     ///////////////////////////////////////////////////
     private Frequency frequencyObj = null;
+    private int propertyCount = 10;
 
     /**
      * 
@@ -122,19 +132,25 @@ public class Property {
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
         }
-        IntervalUnit = defaultIntervalUnit;
+
         frePrecision = defaultFrePrecision;
         // frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
         outputByteOrder = defaultOutPutByteOrder;
         dataUnitFormat = defaultDataUnitFormat;
-        bufferSize = defaultBufferSize;
+
         channelNumber = defaultChannelNumber;
         maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        IntervalUnit = defaultIntervalUnit;
+        bufferSize = defaultBufferSize;
         packetHeaderContent = defaultPacketHeaderContent;
     }
 
     public Property() {
+        load();
 
+    }
+
+    public void loadDefaultGeneral() {
         filePath = defaultFilePath;
         sensorType = defaultSensorType;
         timeStampPosition = defaultTimeStampPosition;
@@ -147,14 +163,94 @@ public class Property {
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
         }
-        IntervalUnit = defaultIntervalUnit;
+    }
+
+    public void loadDefaultAdvance() {
         frePrecision = defaultFrePrecision;
         outputByteOrder = defaultOutPutByteOrder;
         dataUnitFormat = defaultDataUnitFormat;
-        bufferSize = defaultBufferSize;
         channelNumber = defaultChannelNumber;
-        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
         packetHeaderContent = defaultPacketHeaderContent;
+    }
+
+    public void loadDefaultHidden() {
+        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
+        IntervalUnit = defaultIntervalUnit;
+        bufferSize = defaultBufferSize;
+    }
+
+    public void load() {
+        String dataLine = "";
+        try {
+            File f = new File(PropertyFile);
+            if (f.exists()) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(f)));
+                for (int i = 0; i < propertyCount; i++) {
+                    dataLine = br.readLine();
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("FilePath")) {
+                        filePath = dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length());
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("TransmitMode")) {
+                        transMode = Byte.parseByte(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("TimeStampPosition")) {
+                        timeStampPosition = Byte.parseByte(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("TransmitFrequency")) {
+                        transFrequency = Integer.parseInt(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("SensorType")) {
+                        sensorType = dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length());
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("OutputByteOrder")) {
+                        outputByteOrder = Byte.parseByte(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("DataUnitFormat")) {
+                        dataUnitFormat = Integer.parseInt(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("ChannelNumber")) {
+                        channelNumber = Integer.parseInt(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("FrequencyPrecision")) {
+                        frePrecision = Double.parseDouble(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                    if (dataLine.substring(0, dataLine.indexOf('=')).equals("PacketHeaderContent")) {
+                        packetHeaderContent = Byte.parseByte(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
+                    }
+                }
+
+                br.close();
+            } else {
+                loadDefaultGeneral();
+                loadDefaultAdvance();
+                loadDefaultHidden();
+            }
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("Properties file not found.");
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            System.out.println("Load properties error.");
+            ex.printStackTrace();
+        }
+    }
+
+    public void saveToFile() {
+        try {
+            File f = new File(PropertyFile);
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(f));
+            String str = "FilePath=" + filePath + "\n" + "TransmitMode=" + Byte.toString(transMode) + "\nTimeStampPosition=" + Byte.toString(timeStampPosition) + "\nTransmitFrequency=" + Integer.toString(transFrequency) + "\nSensorType=" + sensorType + "\nOutputByteOrder=" + Byte.toString(outputByteOrder) + "\nDataUnitFormat=" + Integer.toString(dataUnitFormat) + "\nChannelNumber=" + Integer.toString(channelNumber) + "\nFrequencyPrecision=" + Double.toString(frePrecision) + "\nPacketHeaderContent=" + Byte.toString(packetHeaderContent);
+            dos.write(str.getBytes());
+
+            dos.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public void setHiddenProperties(int buffersize, int maxsimpacno, int minSleepUnit) {
