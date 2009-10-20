@@ -45,4 +45,9 @@ public class SimulatorDriver {
     public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int channelnumber, double frePrecision, byte headerContent) throws SimulatorException {
         wtPro.setAdvanceProperties(outputbyteorder, dataunitformat, channelnumber, frePrecision, headerContent);
     }
+
+    public Property getWtPro() {
+        return wtPro;
+    }
+    
 }

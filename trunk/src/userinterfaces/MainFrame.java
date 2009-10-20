@@ -40,6 +40,10 @@ public class MainFrame extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         initComponents();
+        loadGeneralPropertiesToFrame();
+        windowwidth = this.getToolkit().getScreenSize().width;
+        windowheight = this.getToolkit().getScreenSize().height;
+        this.setBounds(windowwidth / 4, windowheight / 4, windowwidth / 2, windowheight / 2);
     }
 
     /** This method is called from within the constructor to
@@ -143,6 +147,11 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel6.setText("Hz");
 
         saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -153,7 +162,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(saveButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
                         .addComponent(advanceButton)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -166,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(fileNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                .addComponent(fileNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseButton))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -178,11 +187,11 @@ public class MainFrame extends javax.swing.JFrame {
                                         .addGap(33, 33, 33)
                                         .addComponent(jLabel5)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                                        .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel6))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                                         .addComponent(frequencyRadioButton)
                                         .addGap(35, 35, 35))))
                             .addComponent(sensorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -324,7 +333,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addGap(12, 12, 12))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(18, Short.MAX_VALUE))))
+                        .addContainerGap(22, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,31 +354,21 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_advanceButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        sensorComboBox.setSelectedIndex(0);
-        fileNameTextField.setText("");
-        timeStampComboBox.setSelectedIndex(0);
-        frequencyTextField.setText("");
-        frequencyRadioButton.setSelected(false);
-        timeStampRadioButton.setSelected(true);
-
-        jLabel4.setEnabled(true);
-
-        jLabel5.setEnabled(false);
-        frequencyTextField.setEnabled(false);
+        simdriver.getWtPro().loadDefaultGeneral();
+        loadGeneralPropertiesToFrame();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void timeStampRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeStampRadioButtonActionPerformed
-        jLabel4.setEnabled(true);
-
         jLabel5.setEnabled(false);
+
+        jLabel6.setEnabled(false);
         frequencyTextField.setEnabled(false);
     }//GEN-LAST:event_timeStampRadioButtonActionPerformed
 
     private void frequencyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frequencyRadioButtonActionPerformed
-        jLabel4.setEnabled(false);
 
         jLabel5.setEnabled(true);
+        jLabel6.setEnabled(true);
         frequencyTextField.setEnabled(true);
     }//GEN-LAST:event_frequencyRadioButtonActionPerformed
 
@@ -439,6 +438,15 @@ public class MainFrame extends javax.swing.JFrame {
         //progressframe=new ProgressFrame();
         //progressframe.setVisible(true);
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        try {
+            simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
+        } catch (SimulatorException ex) {
+            ex.printStackTrace();
+        }
+        simdriver.getWtPro().saveToFile();
+    }//GEN-LAST:event_saveButtonActionPerformed
     private String getFilePath() {
         return fileNameTextField.getText().trim();
     }
@@ -480,6 +488,37 @@ public class MainFrame extends javax.swing.JFrame {
             type = Property.SensorType_WiTiltSensor;
         }
         return type;
+    }
+
+    private void loadGeneralPropertiesToFrame() {
+        if (simdriver.getWtPro().getSensorType().equals(Property.SensorType_WiTiltSensor)) {
+            sensorComboBox.setSelectedIndex(0);
+        }
+
+        fileNameTextField.setText(simdriver.getWtPro().getFilePath());
+        frequencyTextField.setText(Integer.toString(simdriver.getWtPro().getFrequency()));
+
+        if (simdriver.getWtPro().getTransMode() == Property.TransMode_TimeStamp) {
+            timeStampRadioButton.setSelected(true);
+            frequencyRadioButton.setSelected(false);
+            frequencyTextField.setEnabled(false);
+            jLabel5.setEnabled(false);
+            jLabel6.setEnabled(false);
+        } else if (simdriver.getWtPro().getTransMode() == Property.TransMode_Frequency) {
+            timeStampRadioButton.setSelected(false);
+            frequencyRadioButton.setSelected(true);
+            frequencyTextField.setText(Integer.toString(simdriver.getWtPro().getTransFrequency()));
+            jLabel5.setEnabled(true);
+            jLabel6.setEnabled(true);
+        }
+
+        if (simdriver.getWtPro().getTimeStampPosition() == Property.TimeStampPosition_Begin) {
+            timeStampComboBox.setSelectedIndex(0);
+        } else if (simdriver.getWtPro().getTimeStampPosition() == Property.TimeStampPosition_End) {
+            timeStampComboBox.setSelectedIndex(1);
+        } else if (simdriver.getWtPro().getTimeStampPosition() == Property.TimeStampPosition_None) {
+            timeStampComboBox.setSelectedIndex(2);
+        }
     }
 
     /**

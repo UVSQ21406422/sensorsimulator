@@ -1,25 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * ProgressFrame.java
- *
- * Created on 2009-okt-11, 20:34:46
- */
-
 package userinterfaces;
 
-/**
- *
- * @author chen
- */
 public class ProgressFrame extends javax.swing.JFrame {
 
     /** Creates new form ProgressFrame */
     public ProgressFrame() {
         initComponents();
+        this.setBounds(MainFrame.windowwidth / 4, MainFrame.windowheight / 4, MainFrame.windowwidth / 2, MainFrame.windowheight / 2);
     }
 
     /** This method is called from within the constructor to
@@ -132,8 +118,6 @@ public class ProgressFrame extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
@@ -143,5 +127,4 @@ public class ProgressFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-
 }
