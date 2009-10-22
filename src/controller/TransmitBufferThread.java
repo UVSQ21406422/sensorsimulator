@@ -43,9 +43,7 @@ public class TransmitBufferThread extends Thread {
                             if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
                                 os.write(buffer.getBufferElementAt(index).getTaskData());
                             } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
-                                os.write(createNewSensorPacket(index));
-                                //byte b[] = createNewSensorPacket(index);
-                              //  System.err.println("New packet sent");
+                               os.write(createNewSensorPacket(index));
                             }
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -74,8 +72,6 @@ public class TransmitBufferThread extends Thread {
                                 os.write(buffer.getBufferElementAt(index).getTaskData());
                             } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
                                 os.write(createNewSensorPacket(index));
-                                //byte b[] = createNewSensorPacket(index);
-                                //System.err.println("New packet sent");
                             }
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -130,8 +126,8 @@ public class TransmitBufferThread extends Thread {
         temp[0] = (byte) 42;//"*" start character
 
         //transmit time stamp
-        System.arraycopy(longToBinary(System.currentTimeMillis(), wtPro.getOutputByteOrder()), 0, temp, 1, 8);
-
+        long t = System.currentTimeMillis();
+        System.arraycopy(longToBinary(t, wtPro.getOutputByteOrder()), 0, temp, 1, 8);
         //actual data
         System.arraycopy(buffer.getBufferElementAt(bufferIndex).getTaskData(), 0, temp, 9, buffer.getBufferElementAt(bufferIndex).getDataLength());
 
