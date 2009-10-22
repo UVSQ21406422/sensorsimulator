@@ -16,30 +16,37 @@ public class TransmitBufferThread extends Thread {
     private int index; // index in the taskBuffer
     private boolean stop;
     private int bufferSize;
-    private byte transMode; // transmission mode
     private int sleepInterval;
+    private Property wtPro;
 
     public TransmitBufferThread(Property p, TransmissionBuffer buffer, OutputStream os) {
         this.os = os;
         this.buffer = buffer;
+        wtPro = p;
         index = 0;
         stop = false;
         bufferSize = buffer.getBufferSize();
-        transMode = p.getTransMode();
-        if (transMode == Property.TransMode_Frequency) {
+
+        if (wtPro.getTransMode() == Property.TransMode_Frequency) {
             sleepInterval = p.getSleepInterval();
         }
     }
 
     @Override
     public void run() {
-        long delay = transMode == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission       
+        long delay = wtPro.getTransMode() == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission
         try {
-            switch (transMode) {
+            switch (wtPro.getTransMode()) {
                 case Property.TransMode_Frequency:
                     while (!stop) {
                         try {
-                            os.write(buffer.getBufferElementAt(index).getTaskData());
+                            if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
+                                os.write(buffer.getBufferElementAt(index).getTaskData());
+                            } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
+                                os.write(createNewSensorPacket(index));
+                                //byte b[] = createNewSensorPacket(index);
+                              //  System.err.println("New packet sent");
+                            }
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -63,7 +70,13 @@ public class TransmitBufferThread extends Thread {
                 case Property.TransMode_TimeStamp:
                     while (!stop) {
                         try {
-                            os.write(buffer.getBufferElementAt(index).getTaskData());
+                            if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
+                                os.write(buffer.getBufferElementAt(index).getTaskData());
+                            } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
+                                os.write(createNewSensorPacket(index));
+                                //byte b[] = createNewSensorPacket(index);
+                                //System.err.println("New packet sent");
+                            }
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -102,5 +115,51 @@ public class TransmitBufferThread extends Thread {
 
     public void stopTransmission() {
         stop = true;
+    }
+
+    /**
+     * compose a new packet with transmit time stamp in the header, packet start with a start character "*",
+     * end with a end character "%"
+     * @param bufferIndex: the index in transmissionBuffer which store the actual data
+     * @return a byte array of new packet
+     */
+    private byte[] createNewSensorPacket(int bufferIndex) {
+        int size = 10 + buffer.getBufferElementAt(bufferIndex).getDataLength();
+        byte[] temp = new byte[size];
+
+        temp[0] = (byte) 42;//"*" start character
+
+        //transmit time stamp
+        System.arraycopy(longToBinary(System.currentTimeMillis(), wtPro.getOutputByteOrder()), 0, temp, 1, 8);
+
+        //actual data
+        System.arraycopy(buffer.getBufferElementAt(bufferIndex).getTaskData(), 0, temp, 9, buffer.getBufferElementAt(bufferIndex).getDataLength());
+
+        temp[size - 1] = (byte) 37; //"%" end character
+        return temp;
+    }
+
+    /**
+     *
+     * @param value
+     * @param byteorder
+     * @return byte array or null if no byte order matched
+     */
+    private byte[] longToBinary(long value, int byteorder) {
+
+        switch (byteorder) {
+            case Property.ByteOrder_HighLow:
+                return new byte[]{
+                            (byte) (value >>> 56), (byte) (value >> 48 & 0xFF), (byte) (value >> 40 & 0xff), (byte) (value >> 32 & 0xff),
+                            (byte) (value >> 24 & 0xff), (byte) (value >> 16 & 0xFF), (byte) (value >> 8 & 0xff), (byte) (value & 0xff)
+                        };
+            case Property.ByteOrder_LowHigh:
+                return new byte[]{
+                            (byte) (value & 0xff), (byte) (value >> 8 & 0xff), (byte) (value >> 16 & 0xFF), (byte) (value >> 24 & 0xff),
+                            (byte) (value >> 32 & 0xff), (byte) (value >> 40 & 0xff), (byte) (value >> 48 & 0xFF), (byte) (value >>> 56)
+                        };
+            default:
+                return null;
+        }
     }
 }

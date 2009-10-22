@@ -219,7 +219,7 @@ public class Property {
                         packetHeaderContent = Byte.parseByte(dataLine.substring(dataLine.indexOf('=') + 1, dataLine.length()));
                     }
                 }
-
+                loadDefaultHidden();
                 br.close();
             } else {
                 loadDefaultGeneral();
