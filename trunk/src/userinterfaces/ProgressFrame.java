@@ -9,6 +9,7 @@ import simulatorexception.SimulatorException;
 public class ProgressFrame extends javax.swing.JFrame {
 
     MainFrame m;
+    int rounds = 0;
 
     /** Creates new form ProgressFrame */
     public ProgressFrame(MainFrame m) {
@@ -155,11 +156,11 @@ public class ProgressFrame extends javax.swing.JFrame {
         try {
             try {
                 m.stop();
-              //  System.out.println("Service stopped by user");
-               // progressStateTextArea.append("Service stopped by user\n");
+                //  System.out.println("Service stopped by user");
+                // progressStateTextArea.append("Service stopped by user\n");
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
-              //  progressStateTextArea.append(ex.getMessage() + "\n");
+                //  progressStateTextArea.append(ex.getMessage() + "\n");
             }
         } catch (SimulatorException ex) {
             System.out.println(ex.getMessage());
@@ -205,6 +206,14 @@ public class ProgressFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void updateProgress(double percent) {
+        if (rounds < (int) (percent - percent % 1)) {
+            rounds++;
+            progressStateTextArea.append("Transmission completed.\n");
+            jProgressBar1.setValue(0);
+        }else{
+            jProgressBar1.setValue((int) percent%1 * 100);
+        }
+        
     }
 
     public void updateState(String message) {
