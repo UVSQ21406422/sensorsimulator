@@ -157,7 +157,7 @@ MainFrame m;
     // End of variables declaration//GEN-END:variables
 
     public void transmitProgressEvent(double percent) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       
     }
 
     public void systemInforEvent(String message) {
