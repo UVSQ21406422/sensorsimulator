@@ -6,7 +6,8 @@ package simulatordriver;
 
 import communication.SimulatorConnection;
 import controller.Controller;
-import controller.StateListner;
+import controller.StateListener;
+import java.io.IOException;
 import property.Property;
 import simulatorexception.SimulatorException;
 
@@ -14,19 +15,19 @@ import simulatorexception.SimulatorException;
  *
  * @author CZC
  */
-public class SimulatorDriver implements StateListner {
+public class SimulatorDriver implements StateListener {
 
     private String filepath;
     private SimulatorConnection simCon;
     private Controller controller;
     private Property wtPro;
-    private DriverStateListner driverStateListner;
+    private DriverStateListener driverStateListner;
 
-    public SimulatorDriver(DriverStateListner driverStateListner) throws SimulatorException {
+    public SimulatorDriver(DriverStateListener driverStateListner) throws SimulatorException {
         //filepath = "D:/Study/WiTilt Simulator Project/testdata/short.txt";
         //filepath = "C:/Documents and Settings/chen/Desktop/tempPhoto/rawSeat.txt";
         this.driverStateListner = driverStateListner;
-        wtPro = new Property();
+        wtPro = new Property(this);
 
     }
 
@@ -52,14 +53,18 @@ public class SimulatorDriver implements StateListner {
     }
 
     public void transmitProgressEvent(long size) {
-        driverStateListner.transmitProgressEvent((double)size / controller.getFileSize());
+        driverStateListner.transmitProgressEvent((double) size / controller.getFileSize());
     }
 
     public void systemInforEvent(String message) {
         driverStateListner.systemInforEvent(message);
     }
 
-    public void close() throws SimulatorException{
+    public void close() throws SimulatorException, IOException {
+        simCon.close();
+        if (controller == null) {
+            return;
+        }
         controller.close();
     }
 }

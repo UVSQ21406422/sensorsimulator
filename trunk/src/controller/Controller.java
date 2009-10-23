@@ -23,9 +23,9 @@ public class Controller {
     private TransmitBufferThread trsBufferThread;
     private WiTiltCommandReceiving wtComreceiveThread;
     private Property wtPro;
-    private StateListner stateListner;
+    private StateListener stateListner;
 
-    public Controller(Property p, InputStream is, OutputStream os, StateListner stateListner) throws SimulatorException {
+    public Controller(Property p, InputStream is, OutputStream os, StateListener stateListner) throws SimulatorException {
         this.os = os;
         this.is = is;
         wtPro = p;
@@ -67,8 +67,7 @@ public class Controller {
         } catch (IOException ex) {
             throw new SimulatorException("Error 008: Unable to close connection");
         }
-        is = null;
-        os = null;
+
         stateListner.systemInforEvent("Closed");
         System.out.println("Closed");
     }

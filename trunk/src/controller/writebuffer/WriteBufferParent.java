@@ -4,7 +4,7 @@
  */
 package controller.writebuffer;
 
-import controller.StateListner;
+import controller.StateListener;
 import controller.TaskObject;
 import controller.TransmissionBuffer;
 import property.Property;
@@ -29,9 +29,9 @@ public abstract class WriteBufferParent extends Thread {
     protected Property wtPro;
     protected SensorFileInputStream fileInputStream;
     protected TransmissionBuffer buffer;
-    private StateListner stateListner;
+    private StateListener stateListner;
 
-    protected WriteBufferParent(Property p, TransmissionBuffer buffer, SensorFileInputStream in, StateListner stateListner) {
+    protected WriteBufferParent(Property p, TransmissionBuffer buffer, SensorFileInputStream in, StateListener stateListner) {
         count = 0;
         stop = false;
         this.buffer = buffer;
