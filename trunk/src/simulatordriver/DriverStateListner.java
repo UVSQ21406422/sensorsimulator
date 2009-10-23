@@ -10,7 +10,7 @@ package simulatordriver;
  */
 public interface DriverStateListner {
 
-    public void transmitProgressEvent(long size);
+    public void transmitProgressEvent(double percent);
 
     public void systemInforEvent(String message);
 }

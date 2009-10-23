@@ -43,11 +43,11 @@ public class Controller {
         if (sensorInStream == null) {
             throw new SimulatorException("Error 005: Null SensorFileInputStream");
         }
-        wtComreceiveThread = new WiTiltCommandReceiving(is, os,stateListner);
+        wtComreceiveThread = new WiTiltCommandReceiving(is, os, stateListner);
         wtComreceiveThread.start();
         if (wtComreceiveThread.StartCommandReceived()) {
-            wToBufferThread = new WriteToBufferWiTilt(wtPro, transmissionBuffer, sensorInStream,stateListner);
-            trsBufferThread = new TransmitBufferThread(wtPro, transmissionBuffer, os,stateListner);
+            wToBufferThread = new WriteToBufferWiTilt(wtPro, transmissionBuffer, sensorInStream, stateListner);
+            trsBufferThread = new TransmitBufferThread(wtPro, transmissionBuffer, os, stateListner);
             wToBufferThread.start();
             trsBufferThread.start();
         }
@@ -71,5 +71,9 @@ public class Controller {
         os = null;
         stateListner.systemInforEvent("Closed");
         System.out.println("Closed");
+    }
+
+    public long getFileSize() {
+        return sensorInStream.getFileSize();
     }
 }

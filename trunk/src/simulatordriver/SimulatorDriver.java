@@ -14,7 +14,7 @@ import simulatorexception.SimulatorException;
  *
  * @author CZC
  */
-public class SimulatorDriver implements StateListner{
+public class SimulatorDriver implements StateListner {
 
     private String filepath;
     private SimulatorConnection simCon;
@@ -34,7 +34,7 @@ public class SimulatorDriver implements StateListner{
         wtPro.initFrequencyObj();
         simCon = new SimulatorConnection();
         simCon.startSppService();
-        controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream(),this);
+        controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream(), this);
         controller.open();
 
     }
@@ -53,11 +53,10 @@ public class SimulatorDriver implements StateListner{
     }
 
     public void transmitProgressEvent(long size) {
-        driverStateListner.transmitProgressEvent(size);
+        driverStateListner.transmitProgressEvent((double)size / controller.getFileSize());
     }
 
     public void systemInforEvent(String message) {
         driverStateListner.systemInforEvent(message);
     }
-    
 }
