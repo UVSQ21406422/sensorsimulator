@@ -17,15 +17,12 @@ import simulatorexception.SimulatorException;
  */
 public class SimulatorDriver implements StateListener {
 
-    private String filepath;
     private SimulatorConnection simCon;
     private Controller controller;
     private Property wtPro;
     private DriverStateListener driverStateListner;
 
     public SimulatorDriver(DriverStateListener driverStateListner) throws SimulatorException {
-        //filepath = "D:/Study/WiTilt Simulator Project/testdata/short.txt";
-        //filepath = "C:/Documents and Settings/chen/Desktop/tempPhoto/rawSeat.txt";
         this.driverStateListner = driverStateListner;
         wtPro = new Property(this);
 
@@ -66,5 +63,7 @@ public class SimulatorDriver implements StateListener {
             return;
         }
         controller.close();
+        simCon = null;
+        controller = null;
     }
 }
