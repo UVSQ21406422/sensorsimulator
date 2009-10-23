@@ -11,8 +11,6 @@
 package userinterfaces;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import simulatordriver.SimulatorDriver;
@@ -35,7 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         try {
-            simdriver = new SimulatorDriver();
+            simdriver = new SimulatorDriver(progressframe);
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }
@@ -43,7 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
         loadGeneralPropertiesToFrame();
         windowwidth = this.getToolkit().getScreenSize().width;
         windowheight = this.getToolkit().getScreenSize().height;
-        this.setBounds(windowwidth / 4, windowheight / 4, windowwidth / 2, windowheight / 2);
+        this.setLocation((int)(windowwidth-this.getSize().getWidth())/2, (int)(windowheight-this.getSize().getHeight())/2);
     }
 
     /** This method is called from within the constructor to
@@ -446,6 +444,9 @@ public class MainFrame extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         simdriver.getWtPro().saveToFile();
+
+        JOptionPane.showMessageDialog(this,"Properties saved.", "Saving completed", JOptionPane.OK_OPTION);
+
     }//GEN-LAST:event_saveButtonActionPerformed
     private String getFilePath() {
         return fileNameTextField.getText().trim();

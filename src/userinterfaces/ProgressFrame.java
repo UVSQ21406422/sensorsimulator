@@ -1,11 +1,13 @@
 package userinterfaces;
 
-public class ProgressFrame extends javax.swing.JFrame {
+import simulatordriver.DriverStateListner;
+
+public class ProgressFrame extends javax.swing.JFrame implements DriverStateListner{
 
     /** Creates new form ProgressFrame */
     public ProgressFrame() {
         initComponents();
-        this.setBounds(MainFrame.windowwidth / 4, MainFrame.windowheight / 4, MainFrame.windowwidth / 2, MainFrame.windowheight / 2);
+        this.setLocation((int)(MainFrame.windowwidth-this.getSize().getWidth())/2, (int)(MainFrame.windowheight-this.getSize().getHeight())/2);
     }
 
     /** This method is called from within the constructor to
@@ -19,7 +21,7 @@ public class ProgressFrame extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        progressStateTextArea = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jPanel3 = new javax.swing.JPanel();
@@ -28,9 +30,9 @@ public class ProgressFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulation Progress");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        progressStateTextArea.setColumns(20);
+        progressStateTextArea.setRows(5);
+        jScrollPane1.setViewportView(progressStateTextArea);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -125,6 +127,15 @@ public class ProgressFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea progressStateTextArea;
     // End of variables declaration//GEN-END:variables
+
+    public void transmitProgressEvent(double percent) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void systemInforEvent(String message) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }
