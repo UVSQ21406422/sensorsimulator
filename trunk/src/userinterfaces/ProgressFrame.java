@@ -11,7 +11,7 @@ MainFrame m;
     public ProgressFrame(MainFrame m) {
         this.m=m;
         initComponents();
-        this.setLocation((int)(MainFrame.windowwidth-this.getSize().getWidth())/2, (int)(MainFrame.windowheight-this.getSize().getHeight())/2);
+       this.setLocation((int)(this.getToolkit().getScreenSize().width-this.getSize().getWidth())/2, (int)(this.getToolkit().getScreenSize().height-this.getSize().getHeight())/2);
     }
 
     /** This method is called from within the constructor to
@@ -34,8 +34,10 @@ MainFrame m;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulation Progress");
+        setResizable(false);
 
         progressStateTextArea.setColumns(20);
+        progressStateTextArea.setEditable(false);
         progressStateTextArea.setRows(5);
         jScrollPane1.setViewportView(progressStateTextArea);
 
@@ -43,7 +45,7 @@ MainFrame m;
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -60,7 +62,7 @@ MainFrame m;
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -93,7 +95,7 @@ MainFrame m;
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 248, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 256, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );

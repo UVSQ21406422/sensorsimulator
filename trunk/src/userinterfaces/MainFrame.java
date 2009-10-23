@@ -419,12 +419,12 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         progressframe.setVisible(true);
-        try {
+        /*try {
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
             simdriver.start();
         } catch (SimulatorException ex) {
             ex.printStackTrace();
-        }
+        }*/
 
 
     }//GEN-LAST:event_startButtonActionPerformed
