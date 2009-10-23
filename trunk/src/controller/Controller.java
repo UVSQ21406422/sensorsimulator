@@ -61,6 +61,9 @@ public class Controller {
         trsBufferThread.stopTransmission();
         transmissionBuffer = null;
         sensorInStream = null;
+        wtComreceiveThread = null;
+        wToBufferThread = null;
+        trsBufferThread = null;
         try {
             os.close();
             is.close();
