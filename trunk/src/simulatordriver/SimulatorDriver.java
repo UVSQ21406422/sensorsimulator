@@ -59,4 +59,8 @@ public class SimulatorDriver implements StateListner {
     public void systemInforEvent(String message) {
         driverStateListner.systemInforEvent(message);
     }
+
+    public void close() throws SimulatorException{
+        controller.close();
+    }
 }
