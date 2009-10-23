@@ -23,13 +23,15 @@ public class Controller {
     private TransmitBufferThread trsBufferThread;
     private WiTiltCommandReceiving wtComreceiveThread;
     private Property wtPro;
+    private StateListner stateListner;
 
-    public Controller(Property p, InputStream is, OutputStream os) throws SimulatorException {
+    public Controller(Property p, InputStream is, OutputStream os, StateListner stateListner) throws SimulatorException {
         this.os = os;
         this.is = is;
         wtPro = p;
         bufferSize = p.getBufferSize();
         transmissionBuffer = new TransmissionBuffer(bufferSize);
+        this.stateListner = stateListner;
         initFileInputStream();
     }
 
@@ -41,11 +43,11 @@ public class Controller {
         if (sensorInStream == null) {
             throw new SimulatorException("Error 005: Null SensorFileInputStream");
         }
-        wtComreceiveThread = new WiTiltCommandReceiving(is, os);
+        wtComreceiveThread = new WiTiltCommandReceiving(is, os,stateListner);
         wtComreceiveThread.start();
         if (wtComreceiveThread.StartCommandReceived()) {
-            wToBufferThread = new WriteToBufferWiTilt(wtPro, transmissionBuffer, sensorInStream);
-            trsBufferThread = new TransmitBufferThread(wtPro, transmissionBuffer, os);
+            wToBufferThread = new WriteToBufferWiTilt(wtPro, transmissionBuffer, sensorInStream,stateListner);
+            trsBufferThread = new TransmitBufferThread(wtPro, transmissionBuffer, os,stateListner);
             wToBufferThread.start();
             trsBufferThread.start();
         }
@@ -67,6 +69,7 @@ public class Controller {
         }
         is = null;
         os = null;
+        stateListner.systemInforEvent("Closed");
         System.out.println("Closed");
     }
 }

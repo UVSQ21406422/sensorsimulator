@@ -13,8 +13,8 @@ import sourcehandler.SensorFileInputStream;
  */
 public class WriteToBufferWiTilt extends WriteBufferParent {
 
-    public WriteToBufferWiTilt(Property p, TransmissionBuffer buffer, SensorFileInputStream in) {
-        super(p, buffer, in);
+    public WriteToBufferWiTilt(Property p, TransmissionBuffer buffer, SensorFileInputStream in, StateListner stateListner) {
+        super(p, buffer, in,stateListner);
     }
 
     @Override

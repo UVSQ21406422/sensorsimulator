@@ -2,6 +2,8 @@ package controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 import property.Property;
 import simulatorexception.SimulatorException;
 
@@ -18,14 +20,17 @@ public class TransmitBufferThread extends Thread {
     private int bufferSize;
     private int sleepInterval;
     private Property wtPro;
+    private long byteSum;
+    private StateListner stateListner;
 
-    public TransmitBufferThread(Property p, TransmissionBuffer buffer, OutputStream os) {
+    public TransmitBufferThread(Property p, TransmissionBuffer buffer, OutputStream os, StateListner stateListner) {
         this.os = os;
         this.buffer = buffer;
         wtPro = p;
         index = 0;
         stop = false;
         bufferSize = buffer.getBufferSize();
+        this.stateListner = stateListner;
 
         if (wtPro.getTransMode() == Property.TransMode_Frequency) {
             sleepInterval = p.getSleepInterval();
@@ -35,6 +40,10 @@ public class TransmitBufferThread extends Thread {
     @Override
     public void run() {
         long delay = wtPro.getTransMode() == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission
+        byteSum = 0;
+        Timer t = new Timer();
+        t.schedule(new ProcessTimerTask(this), 1000, 2000);
+        byte[] b;
         try {
             switch (wtPro.getTransMode()) {
                 case Property.TransMode_Frequency:
@@ -42,8 +51,11 @@ public class TransmitBufferThread extends Thread {
                         try {
                             if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
                                 os.write(buffer.getBufferElementAt(index).getTaskData());
+                                byteSum += buffer.getBufferElementAt(index).getTaskData().length;
                             } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
-                               os.write(createNewSensorPacket(index));
+                                b = createNewSensorPacket(index);
+                                os.write(b);
+                                byteSum += b.length;
                             }
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -70,8 +82,11 @@ public class TransmitBufferThread extends Thread {
                         try {
                             if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
                                 os.write(buffer.getBufferElementAt(index).getTaskData());
+                                byteSum += buffer.getBufferElementAt(index).getTaskData().length;
                             } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
+                                b = createNewSensorPacket(index);
                                 os.write(createNewSensorPacket(index));
+                                byteSum += b.length;
                             }
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -101,9 +116,11 @@ public class TransmitBufferThread extends Thread {
             }
 
         } catch (IllegalArgumentException ex) {
+            stateListner.systemInforEvent(ex.getMessage() + ". " + "Probably caused by obsolute buffer or file end reached");
             System.out.println(ex.getMessage() + ". " + "Probably caused by obsolute buffer or file end reached");
             return;
         } catch (SimulatorException e) {
+            stateListner.systemInforEvent(e.getMessage() + " at TransmitBufferThread");
             System.out.println(e.getMessage() + " at TransmitBufferThread");
             return;
         }
@@ -157,5 +174,23 @@ public class TransmitBufferThread extends Thread {
             default:
                 return null;
         }
+    }
+
+    protected void reportProgress() {
+        stateListner.transmitProgressEvent(byteSum);
+    }
+}
+
+class ProcessTimerTask extends TimerTask {
+
+    private TransmitBufferThread tbt;
+
+    public ProcessTimerTask(TransmitBufferThread tbt) {
+        this.tbt = tbt;
+    }
+
+    @Override
+    public void run() {
+        tbt.reportProgress();
     }
 }
