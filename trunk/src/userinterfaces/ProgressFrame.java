@@ -152,6 +152,19 @@ public class ProgressFrame extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         this.dispose();
+        try {
+            try {
+                m.stop();
+                System.out.println("Service stopped by user");
+                progressStateTextArea.append("Service stopped by user\n");
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                progressStateTextArea.append(ex.getMessage() + "\n");
+            }
+        } catch (SimulatorException ex) {
+            System.out.println(ex.getMessage());
+            progressStateTextArea.append(ex.getMessage() + "\n");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

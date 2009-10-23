@@ -15,4 +15,6 @@ public interface StateListener {
 
     public void systemInforEvent(String message);
 
+    public void stopCommandReceived();
+
 }
