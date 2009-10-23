@@ -418,7 +418,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-
+        progressframe.setVisible(true);
         try {
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
             simdriver.start();
@@ -426,7 +426,7 @@ public class MainFrame extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
-        progressframe.setVisible(true);
+
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
