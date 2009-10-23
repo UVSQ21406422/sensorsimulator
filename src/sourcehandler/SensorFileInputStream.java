@@ -32,12 +32,14 @@ public class SensorFileInputStream {
     private int toCount; //count of each token in one line string
     private int byteCount; //count of each data byte in one line string
     private SensorPacket sensorPacket;
+    private File tempFile;
 
     public SensorFileInputStream(Property p) throws SimulatorException {
         filePath = p.getFilePath();
         timeStampPosition = p.getTimeStampPosition();
         outputByteOrder = p.getOutputByteOrder();
         dataUnitFormat = p.getDataUnitFormat();
+        tempFile = new File(filePath);
         try {
             bufferIn = new BufferedReader(new InputStreamReader(new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))));
         } catch (FileNotFoundException ex) {
@@ -168,7 +170,7 @@ public class SensorFileInputStream {
      * @return the size of file in bytes
      */
     public long getFileSize() {
-        return new File(filePath).length();
+        return tempFile.length();
     }
 
     /**
