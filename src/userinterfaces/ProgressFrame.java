@@ -1,11 +1,15 @@
 package userinterfaces;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import simulatordriver.DriverStateListner;
+import simulatorexception.SimulatorException;
 
 public class ProgressFrame extends javax.swing.JFrame implements DriverStateListner{
-
+MainFrame m;
     /** Creates new form ProgressFrame */
-    public ProgressFrame() {
+    public ProgressFrame(MainFrame m) {
+        this.m=m;
         initComponents();
         this.setLocation((int)(MainFrame.windowwidth-this.getSize().getWidth())/2, (int)(MainFrame.windowheight-this.getSize().getHeight())/2);
     }
@@ -26,6 +30,7 @@ public class ProgressFrame extends javax.swing.JFrame implements DriverStateList
         jProgressBar1 = new javax.swing.JProgressBar();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulation Progress");
@@ -74,12 +79,21 @@ public class ProgressFrame extends javax.swing.JFrame implements DriverStateList
             }
         });
 
+        jButton2.setText("Close");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(317, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 248, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -87,7 +101,9 @@ public class ProgressFrame extends javax.swing.JFrame implements DriverStateList
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -118,10 +134,20 @@ public class ProgressFrame extends javax.swing.JFrame implements DriverStateList
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
+        try {
+            m.stop();
+        } catch (SimulatorException ex) {
+            progressStateTextArea.append(ex.getMessage()+"\n");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+       this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -135,7 +161,7 @@ public class ProgressFrame extends javax.swing.JFrame implements DriverStateList
     }
 
     public void systemInforEvent(String message) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        progressStateTextArea.append(message+"\n");
     }
 
 }

@@ -73,7 +73,6 @@ public class MainFrame extends javax.swing.JFrame {
         saveButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         startButton = new javax.swing.JButton();
-        stopButton = new javax.swing.JButton();
         exitButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -236,8 +235,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        stopButton.setText("Stop");
-
         exitButton.setText("Exit");
         exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,21 +248,15 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(startButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(stopButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
                 .addComponent(exitButton))
         );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {startButton, stopButton});
-
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startButton)
-                    .addComponent(stopButton)
                     .addComponent(exitButton))
                 .addContainerGap())
         );
@@ -433,8 +424,8 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }
-        //progressframe=new ProgressFrame();
-        //progressframe.setVisible(true);
+        progressframe=new ProgressFrame(this);
+        progressframe.setVisible(true);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -522,6 +513,10 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    public void stop() throws SimulatorException{
+        simdriver.close();
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -562,7 +557,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JComboBox sensorComboBox;
     private javax.swing.JButton startButton;
-    private javax.swing.JButton stopButton;
     private javax.swing.JComboBox timeStampComboBox;
     private javax.swing.JRadioButton timeStampRadioButton;
     // End of variables declaration//GEN-END:variables
