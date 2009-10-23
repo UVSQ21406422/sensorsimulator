@@ -33,7 +33,9 @@ public class MainFrame extends javax.swing.JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         try {
+            progressframe = new ProgressFrame(this);
             simdriver = new SimulatorDriver(progressframe);
+
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }
@@ -41,7 +43,7 @@ public class MainFrame extends javax.swing.JFrame {
         loadGeneralPropertiesToFrame();
         windowwidth = this.getToolkit().getScreenSize().width;
         windowheight = this.getToolkit().getScreenSize().height;
-        this.setLocation((int)(windowwidth-this.getSize().getWidth())/2, (int)(windowheight-this.getSize().getHeight())/2);
+        this.setLocation((int) (windowwidth - this.getSize().getWidth()) / 2, (int) (windowheight - this.getSize().getHeight()) / 2);
     }
 
     /** This method is called from within the constructor to
@@ -418,13 +420,12 @@ public class MainFrame extends javax.swing.JFrame {
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
 
         try {
-
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
             simdriver.start();
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }
-        progressframe=new ProgressFrame(this);
+
         progressframe.setVisible(true);
     }//GEN-LAST:event_startButtonActionPerformed
 
@@ -436,7 +437,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         simdriver.getWtPro().saveToFile();
 
-        JOptionPane.showMessageDialog(this,"Properties saved.", "Saving completed", JOptionPane.OK_OPTION);
+        JOptionPane.showMessageDialog(this, "Properties saved.", "Saving completed", JOptionPane.OK_OPTION);
 
     }//GEN-LAST:event_saveButtonActionPerformed
     private String getFilePath() {
@@ -513,7 +514,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
-    public void stop() throws SimulatorException{
+    public void stop() throws SimulatorException {
         simdriver.close();
     }
 
