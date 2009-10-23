@@ -36,7 +36,6 @@ public class SimulatorDriver implements StateListner {
         simCon.startSppService();
         controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream(), this);
         controller.open();
-
     }
 
     public void setGeneralProperties(String path, byte mode, byte timestampposition, int fre, String sensortype) throws SimulatorException {
