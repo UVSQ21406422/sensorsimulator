@@ -29,7 +29,7 @@ public class AdvancedSettingsFrame extends javax.swing.JFrame {
         this.simdriver = simdriver;
         initComponents();
         loadAdvancedPropertyToFrame();
-        this.setBounds(MainFrame.windowwidth / 4, MainFrame.windowheight / 4, MainFrame.windowwidth / 2, MainFrame.windowheight / 2);
+      this.setLocation((int)(MainFrame.windowwidth-this.getSize().getWidth())/2, (int)(MainFrame.windowheight-this.getSize().getHeight())/2);
     }
 
     /** This method is called from within the constructor to
