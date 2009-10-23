@@ -18,10 +18,12 @@ public class WiTiltCommandReceiving extends Thread {
     private OutputStream os;
     private boolean startCommandReceived;
     private boolean stopCommandReceived;
+    private StateListner stateListner;
 
-    public WiTiltCommandReceiving(InputStream is, OutputStream os) {
+    public WiTiltCommandReceiving(InputStream is, OutputStream os, StateListner stateListner) {
         startCommandReceived = false;
         stopCommandReceived = false;
+        this.stateListner = stateListner;
         this.is = is;
         this.os = os;
     }
@@ -57,6 +59,7 @@ public class WiTiltCommandReceiving extends Thread {
                     os.write("#R$".getBytes());
                 }
                 if (ch == 82) {                        //'R' is received
+                    stateListner.systemInforEvent("Ready command received");
                     System.out.println("Ready command received");
                     os.write("#R$".getBytes());
                 }
@@ -65,6 +68,7 @@ public class WiTiltCommandReceiving extends Thread {
                         stopCommandReceived = true;
                         notifyAll();
                     }
+                    stateListner.systemInforEvent("Stop command received");
                     System.out.println("Stop command received");
                     break;
                 }
@@ -74,10 +78,12 @@ public class WiTiltCommandReceiving extends Thread {
                         notifyAll();
                     }
                     os.write("#R$".getBytes());
+                    stateListner.systemInforEvent("Start command received");
                     System.out.println("Start command received");
                 }
             }
         } catch (IOException e) {
+            stateListner.systemInforEvent(e.getMessage());
             System.out.println(e.getMessage());
         }
     }

@@ -6,24 +6,26 @@ package simulatordriver;
 
 import communication.SimulatorConnection;
 import controller.Controller;
+import controller.StateListner;
 import property.Property;
 import simulatorexception.SimulatorException;
-import sourcehandler.SensorFileInputStream;
 
 /**
  *
  * @author CZC
  */
-public class SimulatorDriver {
+public class SimulatorDriver implements StateListner{
 
     private String filepath;
     private SimulatorConnection simCon;
     private Controller controller;
     private Property wtPro;
+    private DriverStateListner driverStateListner;
 
-    public SimulatorDriver() throws SimulatorException {
+    public SimulatorDriver(DriverStateListner driverStateListner) throws SimulatorException {
         //filepath = "D:/Study/WiTilt Simulator Project/testdata/short.txt";
         //filepath = "C:/Documents and Settings/chen/Desktop/tempPhoto/rawSeat.txt";
+        this.driverStateListner = driverStateListner;
         wtPro = new Property();
 
     }
@@ -32,7 +34,7 @@ public class SimulatorDriver {
         wtPro.initFrequencyObj();
         simCon = new SimulatorConnection();
         simCon.startSppService();
-        controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream());
+        controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream(),this);
         controller.open();
 
     }
@@ -48,6 +50,14 @@ public class SimulatorDriver {
 
     public Property getWtPro() {
         return wtPro;
+    }
+
+    public void transmitProgressEvent(long size) {
+        driverStateListner.transmitProgressEvent(size);
+    }
+
+    public void systemInforEvent(String message) {
+        driverStateListner.systemInforEvent(message);
     }
     
 }

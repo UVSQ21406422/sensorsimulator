@@ -4,6 +4,7 @@
  */
 package controller.writebuffer;
 
+import controller.StateListner;
 import controller.TaskObject;
 import controller.TransmissionBuffer;
 import property.Property;
@@ -28,13 +29,15 @@ public abstract class WriteBufferParent extends Thread {
     protected Property wtPro;
     protected SensorFileInputStream fileInputStream;
     protected TransmissionBuffer buffer;
+    private StateListner stateListner;
 
-    protected WriteBufferParent(Property p, TransmissionBuffer buffer, SensorFileInputStream in) {
+    protected WriteBufferParent(Property p, TransmissionBuffer buffer, SensorFileInputStream in, StateListner stateListner) {
         count = 0;
         stop = false;
         this.buffer = buffer;
         fileInputStream = in;
         wtPro = p;
+        this.stateListner = stateListner;
         if (wtPro.getTransMode() == Property.TransMode_TimeStamp) {
             //in time stamp mode, a limit is set for the number of packets would be transmit in one transmission
             maxSimultaneouslyPacketNo = wtPro.getMaxSimultaneouslyPacketNo();
@@ -74,8 +77,9 @@ public abstract class WriteBufferParent extends Thread {
         boolean firstLoop = true; // after the first round to go through the whole buffer, switch to false       
         boolean rollOver = false;
         SensorPacket sp = null;
+        stateListner.systemInforEvent("Loading...");
         System.out.println("Loading...");
-        
+
         while (!stop) {
             while (!stop && count < bufferSize) {
 
@@ -89,6 +93,7 @@ public abstract class WriteBufferParent extends Thread {
                         if (rollOver) {
                             throw new SimulatorException("Error 009: Source file is empty");
                         } else {
+                            stateListner.systemInforEvent("Playback");
                             System.out.println("Playback");
                             rollOver = true;
                             fileInputStream.resetSensorFileInputStream();
@@ -162,6 +167,7 @@ public abstract class WriteBufferParent extends Thread {
 
 
                 } catch (SimulatorException e) {
+                    stateListner.systemInforEvent(e.getMessage()+" "+"Loading exit");
                     System.out.println(e.getMessage());
                     System.out.println("Loading exit");
                     stop = true;
