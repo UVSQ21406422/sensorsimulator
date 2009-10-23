@@ -8,6 +8,8 @@ import communication.SimulatorConnection;
 import controller.Controller;
 import controller.StateListener;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import property.Property;
 import simulatorexception.SimulatorException;
 
@@ -58,12 +60,24 @@ public class SimulatorDriver implements StateListener {
     }
 
     public void close() throws SimulatorException, IOException {
-        simCon.close();
-        if (controller == null) {
-            return;
+        if (controller != null) {
+            controller.close();
+            controller = null;
         }
-        controller.close();
-        simCon = null;
-        controller = null;
+        if (simCon != null) {
+            simCon.close();
+            simCon = null;
+        }
+
+    }
+
+    public void stopCommandReceived() {
+        try {
+            close();
+        } catch (SimulatorException ex) {
+            driverStateListner.systemInforEvent(ex.getMessage());
+        } catch (IOException ex) {
+            driverStateListner.systemInforEvent(ex.getMessage());
+        }
     }
 }

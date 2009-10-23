@@ -52,21 +52,29 @@ public class Controller {
             trsBufferThread.start();
         }
         if (wtComreceiveThread.StopCommandReceived()) {
-            close();
+            stateListner.stopCommandReceived();
         }
     }
 
     public void close() throws SimulatorException {
-        wToBufferThread.stopWriteToBuffer();
-        trsBufferThread.stopTransmission();
+        if (wToBufferThread != null) {
+            wToBufferThread.stopWriteToBuffer();
+        }
+        if (trsBufferThread != null) {
+            trsBufferThread.stopTransmission();
+        }
         transmissionBuffer = null;
         sensorInStream = null;
         wtComreceiveThread = null;
         wToBufferThread = null;
         trsBufferThread = null;
         try {
-            os.close();
-            is.close();
+            if (os != null) {
+                os.close();
+            }
+            if (is != null) {
+                is.close();
+            }
         } catch (IOException ex) {
             throw new SimulatorException("Error 008: Unable to close connection");
         }
