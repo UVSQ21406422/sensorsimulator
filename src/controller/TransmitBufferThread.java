@@ -21,9 +21,10 @@ public class TransmitBufferThread extends Thread {
     private int sleepInterval;
     private Property wtPro;
     private long byteSum;
-    private StateListner stateListner;
+    private StateListener stateListner;
+    private Timer t;
 
-    public TransmitBufferThread(Property p, TransmissionBuffer buffer, OutputStream os, StateListner stateListner) {
+    public TransmitBufferThread(Property p, TransmissionBuffer buffer, OutputStream os, StateListener stateListner) {
         this.os = os;
         this.buffer = buffer;
         wtPro = p;
@@ -41,7 +42,7 @@ public class TransmitBufferThread extends Thread {
     public void run() {
         long delay = wtPro.getTransMode() == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission
         byteSum = 0;
-        Timer t = new Timer();
+         t = new Timer();
         t.schedule(new ProcessTimerTask(this), 1000, 2000);
         byte[] b;
         try {
@@ -127,6 +128,7 @@ public class TransmitBufferThread extends Thread {
     }
 
     public void stopTransmission() {
+        t.cancel();
         stop = true;
     }
 

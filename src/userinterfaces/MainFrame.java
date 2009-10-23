@@ -11,17 +11,19 @@
 package userinterfaces;
 
 import java.io.File;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import simulatordriver.SimulatorDriver;
 import simulatorexception.SimulatorException;
 import property.Property;
+import simulatordriver.DriverStateListener;
 
 /**
  *
  * @author chen
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements DriverStateListener {
 
     public static int windowwidth, windowheight;
     final JFileChooser fc = new JFileChooser();
@@ -33,8 +35,7 @@ public class MainFrame extends javax.swing.JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         try {
-            progressframe = new ProgressFrame(this);
-            simdriver = new SimulatorDriver(progressframe);
+            simdriver = new SimulatorDriver(this);
 
         } catch (SimulatorException ex) {
             ex.printStackTrace();
@@ -161,7 +162,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(saveButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
                         .addComponent(advanceButton)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -174,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(fileNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                                .addComponent(fileNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseButton))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -186,11 +187,11 @@ public class MainFrame extends javax.swing.JFrame {
                                         .addGap(33, 33, 33)
                                         .addComponent(jLabel5)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                                        .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel6))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                                         .addComponent(frequencyRadioButton)
                                         .addGap(35, 35, 35))))
                             .addComponent(sensorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -230,7 +231,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(saveButton)))
         );
 
-        startButton.setText("Start");
+        startButton.setText("Confirm");
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
@@ -248,9 +249,10 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(startButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 282, Short.MAX_VALUE)
                 .addComponent(exitButton))
         );
         jPanel2Layout.setVerticalGroup(
@@ -258,8 +260,8 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(19, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startButton)
-                    .addComponent(exitButton))
+                    .addComponent(exitButton)
+                    .addComponent(startButton))
                 .addContainerGap())
         );
 
@@ -324,7 +326,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addGap(12, 12, 12))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(22, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -418,16 +420,19 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        progressframe = new ProgressFrame(this);
         progressframe.setVisible(true);
-        /*try {
+    }//GEN-LAST:event_startButtonActionPerformed
+
+    public void startService() {
+        try {
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
             simdriver.start();
         } catch (SimulatorException ex) {
-            ex.printStackTrace();
-        }*/
-
-
-    }//GEN-LAST:event_startButtonActionPerformed
+            System.out.println(ex.getMessage());
+            progressframe.updateState(ex.getMessage());
+        }
+    }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
@@ -514,7 +519,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
-    public void stop() throws SimulatorException {
+    public void stop() throws SimulatorException, IOException {
         simdriver.close();
     }
 
@@ -561,4 +566,12 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox timeStampComboBox;
     private javax.swing.JRadioButton timeStampRadioButton;
     // End of variables declaration//GEN-END:variables
+
+    public void transmitProgressEvent(double percent) {
+        progressframe.updateProgress(percent);
+    }
+
+    public void systemInforEvent(String message) {
+        progressframe.updateState(message);
+    }
 }

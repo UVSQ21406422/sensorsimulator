@@ -51,4 +51,23 @@ public class SimulatorConnection {
         }
         return is;
     }
+
+    public void close() throws IOException {
+        if (is != null) {
+            is.close();
+            is = null;
+        }
+        if (os != null) {
+            os.close();
+            os = null;
+        }
+        if (service != null) {
+            service.close();
+            service = null;
+        }
+        if (con != null) {
+            con.close();
+            con = null;
+        }
+    }
 }

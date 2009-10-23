@@ -4,6 +4,7 @@
  */
 package property;
 
+import controller.StateListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -81,71 +82,10 @@ public class Property {
     ///////////////////////////////////////////////////
     private Frequency frequencyObj = null;
     private int propertyCount = 10;
+    private StateListener stateListner;
 
-    /**
-     * 
-     * @param path, the location of source file
-     * @param timestampposition, the position of time stamp in source file
-     * @param sensortype, the type of sensor
-     */
-    public Property(String path, byte mode, byte timestampposition, int fre, String sensortype) {
-
-        filePath = path;
-        sensorType = sensortype;
-        timeStampPosition = timestampposition;
-        transMode = mode;
-
-        transFrequency = fre;
-        if (transFrequency < TransFrequency_MinFrequency) {
-            transFrequency = TransFrequency_MinFrequency;
-            System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
-        }
-        if (transFrequency > TransFrequency_MaxFrequency) {
-            transFrequency = TransFrequency_MaxFrequency;
-            System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
-        }
-        IntervalUnit = defaultIntervalUnit;
-        frePrecision = defaultFrePrecision;
-
-        outputByteOrder = defaultOutPutByteOrder;
-        dataUnitFormat = defaultDataUnitFormat;
-        bufferSize = defaultBufferSize;
-        channelNumber = defaultChannelNumber;
-        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
-        packetHeaderContent = defaultPacketHeaderContent;
-    }
-
-    /**
-     * 
-     * @param path the location of source file
-     */
-    public Property(String path) {
-        filePath = path;
-        sensorType = defaultSensorType;
-        timeStampPosition = defaultTimeStampPosition;
-        transMode = defaultTransMode;
-
-        transFrequency = defaultTransFrequency;
-        if (transFrequency < TransFrequency_MinFrequency) {
-            transFrequency = TransFrequency_MinFrequency;
-        }
-        if (transFrequency > TransFrequency_MaxFrequency) {
-            transFrequency = TransFrequency_MaxFrequency;
-        }
-
-        frePrecision = defaultFrePrecision;
-        // frequencyObj = new Frequency(transFrequency, IntervalUnit, frePrecision);
-        outputByteOrder = defaultOutPutByteOrder;
-        dataUnitFormat = defaultDataUnitFormat;
-
-        channelNumber = defaultChannelNumber;
-        maxSimultaneouslyPacketNo = defaultMaxSimultaneouslyPacketNo;
-        IntervalUnit = defaultIntervalUnit;
-        bufferSize = defaultBufferSize;
-        packetHeaderContent = defaultPacketHeaderContent;
-    }
-
-    public Property() {
+    public Property(StateListener stateListner) {
+        this.stateListner = stateListner;
         load();
 
     }
@@ -228,9 +168,11 @@ public class Property {
             }
 
         } catch (FileNotFoundException ex) {
+            stateListner.systemInforEvent("Properties file not found. "+ ex.getMessage());
             System.out.println("Properties file not found.");
             ex.printStackTrace();
         } catch (IOException ex) {
+            stateListner.systemInforEvent("Load properties error. "+ex.getMessage());
             System.out.println("Load properties error.");
             ex.printStackTrace();
         }
@@ -270,6 +212,7 @@ public class Property {
         dataUnitFormat = dataunitformat;
         channelNumber = channelnumber;
         packetHeaderContent = headerContent;
+        stateListner.systemInforEvent("Advance properties have been set");
         System.out.println("Advance properties have been set");
     }
 
@@ -281,10 +224,12 @@ public class Property {
             transFrequency = fre;
             if (transFrequency < TransFrequency_MinFrequency) {
                 transFrequency = TransFrequency_MinFrequency;
+                stateListner.systemInforEvent("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
                 System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
             }
             if (transFrequency > TransFrequency_MaxFrequency) {
                 transFrequency = TransFrequency_MaxFrequency;
+                stateListner.systemInforEvent("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
                 System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
             }
             //frequencyObj.calculateFrequency(transFrequency);
@@ -328,11 +273,16 @@ public class Property {
                 break;
         }
         if (transMode == TransMode_Frequency) {
+            stateListner.systemInforEvent("Transmit Mode: Frequency");
             System.out.println("Transmit Mode: Frequency");
+             stateListner.systemInforEvent("Desired Frequency: " + transFrequency);
             System.out.println("Desired Frequency: " + transFrequency);
+             stateListner.systemInforEvent("Real Frequency: " + getRealFrequency());
             System.out.println("Real Frequency: " + getRealFrequency());
+             stateListner.systemInforEvent("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
             System.out.println("T = " + getSleepInterval() + " N = " + getPacketsPerTrans());
         } else if (transMode == TransMode_TimeStamp) {
+             stateListner.systemInforEvent("Transmit Mode: Time Stamp");
             System.out.println("Transmit Mode: Time Stamp");
         }
     }
@@ -345,10 +295,12 @@ public class Property {
         transFrequency = fre;
         if (transFrequency < TransFrequency_MinFrequency) {
             transFrequency = TransFrequency_MinFrequency;
+            stateListner.systemInforEvent("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
             System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
         }
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
+            stateListner.systemInforEvent("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
             System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
         }
     }

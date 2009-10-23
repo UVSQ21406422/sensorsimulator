@@ -18,9 +18,9 @@ public class WiTiltCommandReceiving extends Thread {
     private OutputStream os;
     private boolean startCommandReceived;
     private boolean stopCommandReceived;
-    private StateListner stateListner;
+    private StateListener stateListner;
 
-    public WiTiltCommandReceiving(InputStream is, OutputStream os, StateListner stateListner) {
+    public WiTiltCommandReceiving(InputStream is, OutputStream os, StateListener stateListner) {
         startCommandReceived = false;
         stopCommandReceived = false;
         this.stateListner = stateListner;

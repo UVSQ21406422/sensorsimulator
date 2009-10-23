@@ -2,17 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package controller;
+package simulatordriver;
 
 /**
  *
  * @author CZC
  */
-public interface StateListner {
+public interface DriverStateListener {
 
-    public void transmitProgressEvent(long size);
+    public void transmitProgressEvent(double percent);
 
     public void systemInforEvent(String message);
-
 }

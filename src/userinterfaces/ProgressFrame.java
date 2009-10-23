@@ -1,17 +1,20 @@
 package userinterfaces;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import simulatordriver.DriverStateListner;
+import simulatordriver.DriverStateListener;
 import simulatorexception.SimulatorException;
 
-public class ProgressFrame extends javax.swing.JFrame implements DriverStateListner{
-MainFrame m;
+public class ProgressFrame extends javax.swing.JFrame {
+
+    MainFrame m;
+
     /** Creates new form ProgressFrame */
     public ProgressFrame(MainFrame m) {
-        this.m=m;
+        this.m = m;
         initComponents();
-       this.setLocation((int)(this.getToolkit().getScreenSize().width-this.getSize().getWidth())/2, (int)(this.getToolkit().getScreenSize().height-this.getSize().getHeight())/2);
+        this.setLocation((int) (this.getToolkit().getScreenSize().width - this.getSize().getWidth()) / 2, (int) (this.getToolkit().getScreenSize().height - this.getSize().getHeight()) / 2);
     }
 
     /** This method is called from within the constructor to
@@ -29,8 +32,9 @@ MainFrame m;
         jPanel2 = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulation Progress");
@@ -45,7 +49,7 @@ MainFrame m;
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -62,7 +66,7 @@ MainFrame m;
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
+                .addContainerGap(44, Short.MAX_VALUE)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -74,6 +78,13 @@ MainFrame m;
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
+        jButton2.setText("Close");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         jButton1.setText("Stop");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -81,10 +92,10 @@ MainFrame m;
             }
         });
 
-        jButton2.setText("Close");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton3.setText("Run");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -94,9 +105,11 @@ MainFrame m;
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 256, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
+                .addComponent(jButton2)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -104,8 +117,9 @@ MainFrame m;
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jButton3)
+                    .addComponent(jButton1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -135,21 +149,40 @@ MainFrame m;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            m.stop();
+            try {
+                m.stop();
+                System.out.println("Service stopped by user");
+                progressStateTextArea.append("Service stopped by user\n");
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+                progressStateTextArea.append(ex.getMessage() + "\n");
+            }
         } catch (SimulatorException ex) {
-            progressStateTextArea.append(ex.getMessage()+"\n");
+            System.out.println(ex.getMessage());
+            progressStateTextArea.append(ex.getMessage() + "\n");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Thread t = new Thread() {
 
+            public void run() {
+                m.startService();
+            }
+        };
+        t.start();
+    }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -158,12 +191,10 @@ MainFrame m;
     private javax.swing.JTextArea progressStateTextArea;
     // End of variables declaration//GEN-END:variables
 
-    public void transmitProgressEvent(double percent) {
-       
+    public void updateProgress(double percent) {
     }
 
-    public void systemInforEvent(String message) {
-        progressStateTextArea.append(message+"\n");
+    public void updateState(String message) {
+        progressStateTextArea.append(message + "\n");
     }
-
 }
