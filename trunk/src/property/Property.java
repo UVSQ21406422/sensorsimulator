@@ -212,7 +212,7 @@ public class Property {
         dataUnitFormat = dataunitformat;
         channelNumber = channelnumber;
         packetHeaderContent = headerContent;
-        stateListner.systemInforEvent("Advance properties have been set");
+//        stateListner.systemInforEvent("Advance properties have been set");
         System.out.println("Advance properties have been set");
     }
 
@@ -224,12 +224,12 @@ public class Property {
             transFrequency = fre;
             if (transFrequency < TransFrequency_MinFrequency) {
                 transFrequency = TransFrequency_MinFrequency;
-                stateListner.systemInforEvent("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
+              //  stateListner.systemInforEvent("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
                 System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
             }
             if (transFrequency > TransFrequency_MaxFrequency) {
                 transFrequency = TransFrequency_MaxFrequency;
-                stateListner.systemInforEvent("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
+               // stateListner.systemInforEvent("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
                 System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
             }
             //frequencyObj.calculateFrequency(transFrequency);
@@ -295,12 +295,12 @@ public class Property {
         transFrequency = fre;
         if (transFrequency < TransFrequency_MinFrequency) {
             transFrequency = TransFrequency_MinFrequency;
-            stateListner.systemInforEvent("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
+           // stateListner.systemInforEvent("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
             System.out.println("Desired frequency too low, reset to minumu available = " + TransFrequency_MinFrequency);
         }
         if (transFrequency > TransFrequency_MaxFrequency) {
             transFrequency = TransFrequency_MaxFrequency;
-            stateListner.systemInforEvent("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
+            //stateListner.systemInforEvent("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
             System.out.println("Desired frequency too high, reset to maximum available = " + TransFrequency_MaxFrequency);
         }
     }

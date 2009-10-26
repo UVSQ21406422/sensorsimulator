@@ -51,8 +51,8 @@ public class SimulatorDriver implements StateListener {
         return wtPro;
     }
 
-    public void transmitProgressEvent(long size) {
-        driverStateListner.transmitProgressEvent((double) size / controller.getFileSize());
+    public void transmitProgressEvent(double percent) {
+        driverStateListner.transmitProgressEvent(percent);
     }
 
     public void systemInforEvent(String message) {

@@ -4,6 +4,7 @@
  */
 package sourcehandler;
 
+import controller.StateListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -13,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
 import property.Property;
 import simulatorexception.SimulatorException;
 
@@ -32,19 +35,25 @@ public class SensorFileInputStream {
     private int toCount; //count of each token in one line string
     private int byteCount; //count of each data byte in one line string
     private SensorPacket sensorPacket;
-    private File tempFile;
+    private StateListener stateListener;
+    private long fileSize;
+    private long byteSum;
+    private Timer timer;
 
-    public SensorFileInputStream(Property p) throws SimulatorException {
+    public SensorFileInputStream(Property p, StateListener stateListener) throws SimulatorException {
         filePath = p.getFilePath();
+        this.stateListener = stateListener;
         timeStampPosition = p.getTimeStampPosition();
         outputByteOrder = p.getOutputByteOrder();
         dataUnitFormat = p.getDataUnitFormat();
-        tempFile = new File(filePath);
+        fileSize = new File(filePath).length();
         try {
             bufferIn = new BufferedReader(new InputStreamReader(new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))));
         } catch (FileNotFoundException ex) {
             throw new SimulatorException("Error 003: Source file not found");
         }
+        timer = new Timer();
+        timer.schedule(new ProgressTimerTask(this), 1000, 1000);
     }
 
     /**
@@ -54,6 +63,7 @@ public class SensorFileInputStream {
     public SensorPacket readLine() throws SimulatorException {
         try {
             lineString = bufferIn.readLine();
+            byteSum += lineString.length() + 1;
             if (lineString == null) {  // return null if the end of stream is reached
                 throw new SimulatorException("Error 001: End of file");
                 //return null;
@@ -156,6 +166,10 @@ public class SensorFileInputStream {
      * close SensorFileInputStream
      */
     public void close() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         try {
             bufferIn.close();
             bufferIn = null;
@@ -165,12 +179,8 @@ public class SensorFileInputStream {
         }
     }
 
-    /**
-     *get the size of source file
-     * @return the size of file in bytes
-     */
-    public long getFileSize() {
-        return tempFile.length();
+    public void reportProgressf() {
+        stateListener.transmitProgressEvent((double) byteSum / fileSize);
     }
 
     /**
@@ -238,5 +248,18 @@ public class SensorFileInputStream {
             default:
                 return null;
         }
+    }
+}
+
+class ProgressTimerTask extends TimerTask {
+
+    private SensorFileInputStream sfi;
+
+    public ProgressTimerTask(SensorFileInputStream sfi) {
+        this.sfi = sfi;
+    }
+
+    public void run() {
+        sfi.reportProgressf();
     }
 }
