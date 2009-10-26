@@ -77,8 +77,6 @@ public abstract class WriteBufferParent extends Thread {
         boolean firstLoop = true; // after the first round to go through the whole buffer, switch to false       
         boolean rollOver = false;
         SensorPacket sp = null;
-        stateListner.systemInforEvent("Loading...");
-        System.out.println("Loading...");
 
         while (!stop) {
             while (!stop && count < bufferSize) {

@@ -32,6 +32,7 @@ public class ProgressFrame extends javax.swing.JFrame {
         progressStateTextArea = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
+        jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -50,7 +51,7 @@ public class ProgressFrame extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -62,21 +63,28 @@ public class ProgressFrame extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Progress"));
 
+        jLabel1.setText("0%");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(195, 195, 195)
+                .addComponent(jLabel1)
+                .addContainerGap(180, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(44, Short.MAX_VALUE)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
+                .addGap(39, 39, 39))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jButton2.setText("Close");
@@ -109,7 +117,7 @@ public class ProgressFrame extends javax.swing.JFrame {
                 .addComponent(jButton3)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addContainerGap())
         );
@@ -197,6 +205,7 @@ public class ProgressFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -206,13 +215,24 @@ public class ProgressFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void updateProgress(double percent) {
-       // System.out.print(percent);
-        if (rounds < (int) (percent - percent % 1)) {
-            rounds++;
-            progressStateTextArea.append("Transmission completed.\n");
-            jProgressBar1.setValue((int)( (percent % 1) * 100));
+        // System.out.print(percent);
+       /* if (rounds < (int) (percent - percent % 1)) {
+        rounds++;
+        System.out.println("Repeat");
+        progressStateTextArea.append("Repeat.\n");
+        jProgressBar1.setValue((int)( (percent % 1) * 100));
         } else {
-            jProgressBar1.setValue((int)( (percent % 1) * 100));
+        jProgressBar1.setValue((int)( (percent % 1) * 100));
+        }*/
+        if (percent == (double) 1.0) {
+            System.out.println("100%");
+            jLabel1.setText("100%");
+            jProgressBar1.setValue(100);
+        } else {
+            System.out.println((int) ((percent % 1) * 100) + "%");
+            jLabel1.setText(Integer.toString((int) ((percent % 1) * 100)) + "%\n");
+            jProgressBar1.setValue((int) ((percent % 1) * 100));
+
         }
 
     }
