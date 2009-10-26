@@ -39,6 +39,7 @@ public class SensorFileInputStream {
     private long fileSize;
     private long byteSum;
     private Timer timer;
+    private ProgressTimerTask ptt;
 
     public SensorFileInputStream(Property p, StateListener stateListener) throws SimulatorException {
         filePath = p.getFilePath();
@@ -53,7 +54,8 @@ public class SensorFileInputStream {
             throw new SimulatorException("Error 003: Source file not found");
         }
         timer = new Timer();
-        timer.schedule(new ProgressTimerTask(this), 1000, 1000);
+        ptt = new ProgressTimerTask(this);
+        timer.schedule(ptt, 1000, 1000);
     }
 
     /**
@@ -63,11 +65,17 @@ public class SensorFileInputStream {
     public SensorPacket readLine() throws SimulatorException {
         try {
             lineString = bufferIn.readLine();
-            byteSum += lineString.length() + 1;
+
             if (lineString == null) {  // return null if the end of stream is reached
+                byteSum = fileSize;
+                reportProgressf();
+                ptt.cancel();
+                ptt = new ProgressTimerTask(this);
+                timer.schedule(ptt, 1000, 1000);
                 throw new SimulatorException("Error 001: End of file");
                 //return null;
             } else {
+                byteSum += lineString.length() + 1;
                 StringTokenizer st = new StringTokenizer(lineString);
                 tokenCounts = st.countTokens();
                 toCount = 0;
@@ -180,6 +188,7 @@ public class SensorFileInputStream {
     }
 
     public void reportProgressf() {
+
         stateListener.transmitProgressEvent((double) byteSum / fileSize);
     }
 

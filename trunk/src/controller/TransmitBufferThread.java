@@ -38,6 +38,8 @@ public class TransmitBufferThread extends Thread {
     public void run() {
         long delay = wtPro.getTransMode() == Property.TransMode_Frequency ? sleepInterval : -1; //delay between each transmission      
         try {
+            stateListner.systemInforEvent("Start transmitting");
+            System.out.println("Start transmitting");
             switch (wtPro.getTransMode()) {
                 case Property.TransMode_Frequency:
                     while (!stop) {
