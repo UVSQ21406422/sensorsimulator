@@ -36,7 +36,7 @@ public class Controller {
     }
 
     private void initFileInputStream() throws SimulatorException {
-        sensorInStream = new SensorFileInputStream(wtPro);
+        sensorInStream = new SensorFileInputStream(wtPro, stateListner);
     }
 
     public void open() throws SimulatorException {
@@ -64,7 +64,10 @@ public class Controller {
             trsBufferThread.stopTransmission();
         }
         transmissionBuffer = null;
-        sensorInStream = null;
+        if (sensorInStream != null) {
+            sensorInStream.close();
+            sensorInStream = null;
+        }
         wtComreceiveThread = null;
         wToBufferThread = null;
         trsBufferThread = null;
@@ -81,9 +84,5 @@ public class Controller {
 
         stateListner.systemInforEvent("Closed");
         System.out.println("Closed");
-    }
-
-    public long getFileSize() {
-        return sensorInStream.getFileSize();
     }
 }

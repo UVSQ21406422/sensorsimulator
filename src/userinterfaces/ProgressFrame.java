@@ -206,14 +206,15 @@ public class ProgressFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void updateProgress(double percent) {
+       // System.out.print(percent);
         if (rounds < (int) (percent - percent % 1)) {
             rounds++;
             progressStateTextArea.append("Transmission completed.\n");
-            jProgressBar1.setValue(0);
-        }else{
-            jProgressBar1.setValue((int) percent%1 * 100);
+            jProgressBar1.setValue((int)( (percent % 1) * 100));
+        } else {
+            jProgressBar1.setValue((int)( (percent % 1) * 100));
         }
-        
+
     }
 
     public void updateState(String message) {

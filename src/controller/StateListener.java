@@ -11,7 +11,7 @@ package controller;
  */
 public interface StateListener {
 
-    public void transmitProgressEvent(long size);
+    public void transmitProgressEvent(double percent);
 
     public void systemInforEvent(String message);
 
