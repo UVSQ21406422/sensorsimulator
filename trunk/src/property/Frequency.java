@@ -1,11 +1,14 @@
+/**
+ * This class helps to determine how the desired frequency should be achieved
+ */
+/**
+ *
+ * @author Cao
+ */
 package property;
 
 import simulatorexception.SimulatorException;
 
-/**
- *
- * @author CZC
- */
 public class Frequency {
 
     private int minSleepUnit;//the smallest sleep interval in this system in millisecond

@@ -1,16 +1,16 @@
 /**
  * represents one packet toghther with its time stamp
  */
-package sourcehandler;
-
 /**
  *
  * @author CZC
  */
+package sourcehandler;
+
 public class SensorPacket {
 
     private byte[] data;
-    private int dataLength;
+    private int dataLength;                                                     //the length of data field
     private long timeStamp;
 
     public SensorPacket(byte[] b, int srcPos, int length, long time) {

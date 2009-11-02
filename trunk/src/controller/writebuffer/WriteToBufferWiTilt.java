@@ -1,5 +1,8 @@
 /**
- * write WiTilt packet to buffer
+ * This class specify the format of a WiTilt packet
+ */
+/**
+ * @author CZC
  */
 package controller.writebuffer;
 
@@ -7,14 +10,10 @@ import controller.*;
 import property.Property;
 import sourcehandler.SensorFileInputStream;
 
-/**
- *
- * @author CZC
- */
 public class WriteToBufferWiTilt extends WriteBufferParent {
 
     public WriteToBufferWiTilt(Property p, TransmissionBuffer buffer, SensorFileInputStream in, StateListener stateListner) {
-        super(p, buffer, in,stateListner);
+        super(p, buffer, in, stateListner);
     }
 
     @Override

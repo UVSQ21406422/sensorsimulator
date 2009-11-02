@@ -119,6 +119,9 @@ public class Property {
         bufferSize = defaultBufferSize;
     }
 
+    /**
+     * load properties from file
+     */
     public void load() {
         String dataLine = "";
         try {

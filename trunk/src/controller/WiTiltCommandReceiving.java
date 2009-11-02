@@ -1,6 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This class receives command from receiver
+ */
+/**
+ * @author CZC
  */
 package controller;
 
@@ -8,16 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- *
- * @author CZC
- */
 public class WiTiltCommandReceiving extends Thread {
 
     private InputStream is;
     private OutputStream os;
-    private boolean startCommandReceived;
-    private boolean stopCommandReceived;
+    private boolean startCommandReceived;                                       //true if start command is received
+    private boolean stopCommandReceived;                                        //true if stop command is received
     private StateListener stateListner;
 
     public WiTiltCommandReceiving(InputStream is, OutputStream os, StateListener stateListner) {
@@ -28,6 +26,10 @@ public class WiTiltCommandReceiving extends Thread {
         this.os = os;
     }
 
+    /**
+     * A method to check start command status
+     * @return true if start command was received, else block the thread
+     */
     synchronized protected boolean StartCommandReceived() {
         if (!startCommandReceived) {
             try {
@@ -39,6 +41,10 @@ public class WiTiltCommandReceiving extends Thread {
         return startCommandReceived;
     }
 
+    /**
+     * A method to check stop command status
+     * @return true if stop command was received, else block the thread
+     */
     synchronized protected boolean StopCommandReceived() {
         if (!stopCommandReceived) {
             try {
@@ -51,7 +57,7 @@ public class WiTiltCommandReceiving extends Thread {
     }
 
     @Override
-    public void run() {
+    public void run() {                                                         //recieving commands
         try {
             int ch;
             while ((ch = is.read()) != -1) {

@@ -1,11 +1,13 @@
+/**
+ * The buffer between loading and transmission
+ */
+/**
+ * @author CZC
+ */
 package controller;
 
 import simulatorexception.SimulatorException;
 
-/**
- *
- * @author CZC
- */
 public class TransmissionBuffer {
 
     private TaskObject[] buffer;

@@ -1,6 +1,9 @@
 /**
- * This is the parent class of all WriteBuffer classes
- * Three abstract methods must be implemented.
+ * This is the parent class of all WriteBuffer classes, it construct a TaskObject as buffer element and write it to buffer
+ * There are hree abstract methods must be implemented.
+ */
+/** 
+ * @author CZC
  */
 package controller.writebuffer;
 
@@ -12,18 +15,14 @@ import simulatorexception.SimulatorException;
 import sourcehandler.SensorFileInputStream;
 import sourcehandler.SensorPacket;
 
-/**
- *
- * @author CZC
- */
 public abstract class WriteBufferParent extends Thread {
 
-    protected int count;
+    protected int count;                                                        //the index for the next item to be filled in the buffer
     protected boolean stop;
     protected int maxSimultaneouslyPacketNo;
     protected int packetSize; //the size of one wiTilt packet
     protected int maxSize;  // the maximum size of tempData
-    protected int headerSize;
+    protected int headerSize;                                                   //the size of header of the original sensor packet based on sensor specification
     protected int tailSize;
     protected byte[] tempData;
     protected Property wtPro;
@@ -86,11 +85,11 @@ public abstract class WriteBufferParent extends Thread {
 
                 try {
                     try {
-                        sp = fileInputStream.readLine();
-                    } catch (SimulatorException ee) {
-                        if (rollOver) {
+                        sp = fileInputStream.readLine();                        //return exception when the end of file is reached
+                    } catch (SimulatorException ee) {                           
+                        if (rollOver) {                                         //prevent roop
                             throw new SimulatorException("Error 009: Source file is empty");
-                        } else {
+                        } else {                                                //replay
                             stateListner.systemInforEvent("Playback");
                             System.out.println("Playback");
                             rollOver = true;
@@ -101,7 +100,6 @@ public abstract class WriteBufferParent extends Thread {
                     System.arraycopy(sp.getPacketData(), 0, tempData, headerSize + offset, sp.getDataLength());
 
                     fillPacketTail(offset);
-                    //  tempData[packetSize - 1 + offset] = (byte) 36; //the end of the packet
 
                     if (transMode == Property.TransMode_TimeStamp) { //time stamp mode
                         currTime = sp.getTimeStamp();
@@ -165,7 +163,7 @@ public abstract class WriteBufferParent extends Thread {
 
 
                 } catch (SimulatorException e) {
-                    stateListner.systemInforEvent(e.getMessage()+" "+"Loading exit");
+                    stateListner.systemInforEvent(e.getMessage() + " " + "Loading exit");
                     System.out.println(e.getMessage());
                     System.out.println("Loading exit");
                     stop = true;

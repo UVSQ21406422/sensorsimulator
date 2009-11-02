@@ -1,3 +1,9 @@
+/**
+ * This class creats a bluetooth SPP connection
+ */
+/**
+ * @author CZC
+ */
 package communication;
 
 import java.io.IOException;
@@ -9,10 +15,6 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 import simulatorexception.SimulatorException;
 
-/**
- *
- * @author CZC
- */
 public class SimulatorConnection {
 
     private InputStream is = null;

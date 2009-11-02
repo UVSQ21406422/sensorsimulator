@@ -1,6 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *This class is the driver for different simulator components and provides interfaces for GUI package
+ */
+/**
+ *
+ * @author Cao & Chen
  */
 package simulatordriver;
 
@@ -8,18 +11,12 @@ import communication.SimulatorConnection;
 import controller.Controller;
 import controller.StateListener;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import property.Property;
 import simulatorexception.SimulatorException;
 
-/**
- *
- * @author CZC
- */
 public class SimulatorDriver implements StateListener {
 
-    private SimulatorConnection simCon;
+    private SimulatorConnection simCon;                                         
     private Controller controller;
     private Property wtPro;
     private DriverStateListener driverStateListner;
@@ -27,11 +24,10 @@ public class SimulatorDriver implements StateListener {
     public SimulatorDriver(DriverStateListener driverStateListner) throws SimulatorException {
         this.driverStateListner = driverStateListner;
         wtPro = new Property(this);
-
     }
 
-    public void start() throws SimulatorException {
-        wtPro.initFrequencyObj();
+    public void start() throws SimulatorException {                            //start simulation service
+        wtPro.initFrequencyObj();                                               
         simCon = new SimulatorConnection();
         simCon.startSppService();
         controller = new Controller(wtPro, simCon.getInputStream(), simCon.getOutputStream(), this);
@@ -40,7 +36,6 @@ public class SimulatorDriver implements StateListener {
 
     public void setGeneralProperties(String path, byte mode, byte timestampposition, int fre, String sensortype) throws SimulatorException {
         wtPro.setGeneralProperties(path, mode, timestampposition, fre, sensortype);
-
     }
 
     public void setAdvanceProperties(byte outputbyteorder, int dataunitformat, int channelnumber, double frePrecision, byte headerContent) throws SimulatorException {
@@ -51,10 +46,20 @@ public class SimulatorDriver implements StateListener {
         return wtPro;
     }
 
+    /**
+     * implementation of StateListener interface
+     * define the actions when transmitProgressEvent happens
+     * @param percent
+     */
     public void transmitProgressEvent(double percent) {
         driverStateListner.transmitProgressEvent(percent);
     }
 
+    /**
+     * implementation of StateListener interface
+     * define the actions when systemInforEvent happens
+     * @param message
+     */
     public void systemInforEvent(String message) {
         driverStateListner.systemInforEvent(message);
     }
@@ -71,6 +76,10 @@ public class SimulatorDriver implements StateListener {
 
     }
 
+    /**
+     * implementation of StateListener interface
+     * define the actions when a stop command from receiver is received
+     */
     public void stopCommandReceived() {
         try {
             close();

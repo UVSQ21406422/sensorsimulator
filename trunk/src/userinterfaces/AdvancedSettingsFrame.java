@@ -1,17 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /*
+ * A frame for configuring advance settings
  * AdvancedSettingsFrame.java
  *
  * Created on 2009-okt-11, 20:34:12
  */
 package userinterfaces;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import property.Property;
 import simulatordriver.SimulatorDriver;
 import simulatorexception.SimulatorException;
