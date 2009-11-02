@@ -1,9 +1,9 @@
+/**
+ * A frame to display transmission progress
+ */
 package userinterfaces;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import simulatordriver.DriverStateListener;
 import simulatorexception.SimulatorException;
 
 public class ProgressFrame extends javax.swing.JFrame {
@@ -214,16 +214,7 @@ public class ProgressFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea progressStateTextArea;
     // End of variables declaration//GEN-END:variables
 
-    public void updateProgress(double percent) {
-        // System.out.print(percent);
-       /* if (rounds < (int) (percent - percent % 1)) {
-        rounds++;
-        System.out.println("Repeat");
-        progressStateTextArea.append("Repeat.\n");
-        jProgressBar1.setValue((int)( (percent % 1) * 100));
-        } else {
-        jProgressBar1.setValue((int)( (percent % 1) * 100));
-        }*/
+    public void updateProgress(double percent) {                                //update progress bar
         if (percent == (double) 1.0) {
             System.out.println("100%");
             jLabel1.setText("100%");
@@ -237,7 +228,7 @@ public class ProgressFrame extends javax.swing.JFrame {
 
     }
 
-    public void updateState(String message) {
+    public void updateState(String message) {                                   //update info text field
         progressStateTextArea.append(message + "\n");
     }
 }

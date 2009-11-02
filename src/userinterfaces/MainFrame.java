@@ -1,12 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This class includes the main method of this application.
+ * It creates the main frame of the user interface.
  */
-
 /*
  * MainFrame.java
  *
  * Created on 2009-okt-11, 20:33:25
+ */
+/**
+ *
+ * @author chen & cao
  */
 package userinterfaces;
 
@@ -19,10 +22,6 @@ import simulatorexception.SimulatorException;
 import property.Property;
 import simulatordriver.DriverStateListener;
 
-/**
- *
- * @author chen
- */
 public class MainFrame extends javax.swing.JFrame implements DriverStateListener {
 
     public static int windowwidth, windowheight;
@@ -35,14 +34,14 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
     /** Creates new form MainFrame */
     public MainFrame() {
         try {
-            simdriver = new SimulatorDriver(this);
+            simdriver = new SimulatorDriver(this);           
 
         } catch (SimulatorException ex) {
             ex.printStackTrace();
         }
-        initComponents();
-        loadGeneralPropertiesToFrame();
-        windowwidth = this.getToolkit().getScreenSize().width;
+        initComponents();                                                       //initialize components
+        loadGeneralPropertiesToFrame();                                         //load saved properties
+        windowwidth = this.getToolkit().getScreenSize().width;                  //set the location of the frame
         windowheight = this.getToolkit().getScreenSize().height;
         this.setLocation((int) (windowwidth - this.getSize().getWidth()) / 2, (int) (windowheight - this.getSize().getHeight()) / 2);
     }
@@ -342,35 +341,34 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
     }// </editor-fold>//GEN-END:initComponents
 
     private void advanceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advanceButtonActionPerformed
-        advancedsetting = new AdvancedSettingsFrame(simdriver);
+        advancedsetting = new AdvancedSettingsFrame(simdriver);                 //actions when advance setting button is pressed
         advancedsetting.setVisible(true);
     }//GEN-LAST:event_advanceButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        simdriver.getWtPro().loadDefaultGeneral();
-        loadGeneralPropertiesToFrame();
+        simdriver.getWtPro().loadDefaultGeneral();                              //actions when reset button is pressed
+        loadGeneralPropertiesToFrame();                                         //reload settings
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void timeStampRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeStampRadioButtonActionPerformed
-        jLabel5.setEnabled(false);
-
-        jLabel6.setEnabled(false);
+        jLabel5.setEnabled(false);                                              //actions when time stamp radio button is clicked
+        jLabel6.setEnabled(false);                                              
         frequencyTextField.setEnabled(false);
     }//GEN-LAST:event_timeStampRadioButtonActionPerformed
 
     private void frequencyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frequencyRadioButtonActionPerformed
 
-        jLabel5.setEnabled(true);
+        jLabel5.setEnabled(true);                                               //actions when frequency radio button is clicked
         jLabel6.setEnabled(true);
         frequencyTextField.setEnabled(true);
     }//GEN-LAST:event_frequencyRadioButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
-        System.exit(0);
+        System.exit(0);                                                         //actions for exit button
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseButtonActionPerformed
-        fc.setDialogTitle("Choose source file");
+        fc.setDialogTitle("Choose source file");                                //actions for browse button
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -388,7 +386,7 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
     }//GEN-LAST:event_browseButtonActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        fc.setDialogTitle("Choose source file");
+        fc.setDialogTitle("Choose source file");                                //actions for open item in menu tool bar
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -420,10 +418,13 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        progressframe = new ProgressFrame(this);
+        progressframe = new ProgressFrame(this);                                //actions for start button
         progressframe.setVisible(true);
     }//GEN-LAST:event_startButtonActionPerformed
 
+    /**
+     * start the simulation service
+     */
     public void startService() {
         try {
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
@@ -435,7 +436,7 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
     }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        try {
+        try {                                                                   //actions to save settings
             simdriver.setGeneralProperties(getFilePath(), getTransMode(), getTimeStampPosition(), getFrequency(), getSensorType());
         } catch (SimulatorException ex) {
             ex.printStackTrace();
@@ -488,6 +489,9 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
         return type;
     }
 
+    /**
+     * This method load properties from file, if file doesn't exist, default values will be used
+     */
     private void loadGeneralPropertiesToFrame() {
         if (simdriver.getWtPro().getSensorType().equals(Property.SensorType_WiTiltSensor)) {
             sensorComboBox.setSelectedIndex(0);
@@ -567,10 +571,20 @@ public class MainFrame extends javax.swing.JFrame implements DriverStateListener
     private javax.swing.JRadioButton timeStampRadioButton;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * implementation of interface DriverStateListener
+     * Define the actions when transmitProgressEvent happens
+     * @param percent
+     */
     public void transmitProgressEvent(double percent) {
         progressframe.updateProgress(percent);
     }
 
+    /**
+     *  implementation of interface DriverStateListener
+     * define the actions when systemInforEvent happenss
+     * @param message
+     */
     public void systemInforEvent(String message) {
         progressframe.updateState(message);
     }

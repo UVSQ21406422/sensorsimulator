@@ -1,26 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /*
+ * A frame to display info
  * AboutFrame.java
  *
  * Created on 2009-okt-04, 21:26:49
  */
-
-package userinterfaces;
-
 /**
- *
  * @author chen
  */
+package userinterfaces;
+
 public class AboutFrame extends javax.swing.JFrame {
 
     /** Creates new form AboutFrame */
     public AboutFrame() {
         initComponents();
-      this.setLocation((int)(MainFrame.windowwidth-this.getSize().getWidth())/2, (int)(MainFrame.windowheight-this.getSize().getHeight())/2);
+        this.setLocation((int) (MainFrame.windowwidth - this.getSize().getWidth()) / 2, (int) (MainFrame.windowheight - this.getSize().getHeight()) / 2);
     }
 
     /** This method is called from within the constructor to
@@ -82,11 +77,9 @@ public class AboutFrame extends javax.swing.JFrame {
     private void OkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OkButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_OkButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton OkButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -1,6 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This class define a new custom input stream which reads a line from source file
+ * return an instance of SensorPacket
+ */
+/**
+ * @author Cao
  */
 package sourcehandler;
 
@@ -19,10 +22,6 @@ import java.util.TimerTask;
 import property.Property;
 import simulatorexception.SimulatorException;
 
-/**
- *
- * @author CZC
- */
 public class SensorFileInputStream {
 
     private String filePath;
@@ -75,7 +74,7 @@ public class SensorFileInputStream {
                 throw new SimulatorException("Error 001: End of file");
                 //return null;
             } else {
-                byteSum += lineString.length() + 1;
+                byteSum += lineString.length() + 1;                             //calculate the total bytes been readed
                 StringTokenizer st = new StringTokenizer(lineString);
                 tokenCounts = st.countTokens();
                 toCount = 0;

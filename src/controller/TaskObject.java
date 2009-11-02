@@ -1,15 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package controller;
-
 /**
- *
+ * This class define the task unit which is the item stored in buffer
+ */
+/**
  * @author CZC
  */
-public class TaskObject implements Cloneable{
+package controller;
+
+public class TaskObject implements Cloneable {
 
     private byte[] data;
     private int length;  // the length of bytes to be sent

@@ -1,3 +1,9 @@
+/**
+ * This class sends data to receiver
+ */
+/**
+ * @author CZC
+ */
 package controller;
 
 import java.io.IOException;
@@ -5,10 +11,6 @@ import java.io.OutputStream;
 import property.Property;
 import simulatorexception.SimulatorException;
 
-/**
- *
- * @author CZC
- */
 public class TransmitBufferThread extends Thread {
 
     private OutputStream os;
@@ -16,7 +18,7 @@ public class TransmitBufferThread extends Thread {
     private int index; // index in the taskBuffer
     private boolean stop;
     private int bufferSize;
-    private int sleepInterval;
+    private int sleepInterval;                                                  //the interval between each transmission, only take affect under frequency mode
     private Property wtPro;
     private StateListener stateListner;
 
@@ -41,12 +43,13 @@ public class TransmitBufferThread extends Thread {
             stateListner.systemInforEvent("Start transmitting");
             System.out.println("Start transmitting");
             switch (wtPro.getTransMode()) {
-                case Property.TransMode_Frequency:
+                case Property.TransMode_Frequency:                              //Frequency mode
                     while (!stop) {
                         try {
                             if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
                                 os.write(buffer.getBufferElementAt(index).getTaskData());
                             } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
+                                //add a header to the packet when necessary
                                 os.write(createNewSensorPacket(index));
                             }
                         } catch (IOException ex) {
@@ -54,7 +57,7 @@ public class TransmitBufferThread extends Thread {
                         }
                         index++;
 
-                        //turn on loading once half of the buffer have been sent
+                        //turn on loading once half of the buffer elements have been sent
                         if (index == bufferSize) {
                             index = 0;
                             buffer.turnOnWriting();
@@ -63,29 +66,30 @@ public class TransmitBufferThread extends Thread {
                         }
 
                         try {
-                            Thread.sleep(delay);
+                            Thread.sleep(delay);                                //sleep
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
                     }
                     break;
-                case Property.TransMode_TimeStamp:
+                case Property.TransMode_TimeStamp:                              //time stamp mode
                     while (!stop) {
                         try {
                             if (wtPro.getPacketHeaderContent() == Property.HeaderContent_None) {
                                 os.write(buffer.getBufferElementAt(index).getTaskData());
                             } else if (wtPro.getPacketHeaderContent() == Property.HeaderContent_TimeStamp) {
+                                //add header to the packet when necessary
                                 os.write(createNewSensorPacket(index));
                             }
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
 
-                        delay = buffer.getBufferElementAt(index).getDelay();
+                        delay = buffer.getBufferElementAt(index).getDelay();    //get the time to sleep
 
                         index++;
 
-                        //turn on loading once half of the buffer have been sent
+                        //turn on loading once half of the buffer elements have been sent
                         if (index == bufferSize) {
                             index = 0;
                             buffer.turnOnWriting();
@@ -120,8 +124,8 @@ public class TransmitBufferThread extends Thread {
     }
 
     /**
-     * compose a new packet with transmit time stamp in the header, packet start with a start character "*",
-     * end with a end character "%"
+     * compose a new packet with transmit time in the header, 
+     * packet start with a start character "*", end with a end character "%"
      * @param bufferIndex: the index in transmissionBuffer which store the actual data
      * @return a byte array of new packet
      */
