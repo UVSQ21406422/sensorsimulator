@@ -64,8 +64,6 @@
             <Property name="editable" type="boolean" value="false"/>
             <Property name="rows" type="int" value="5"/>
             <Property name="text" type="java.lang.String" value="Sensor Simulator&#xa;&#xa;Run:&#xa;1. select source file to transmit&#xa;2. configure settings&#xa;3. click advance button to configure advance settings&#xa;4. click save button to save settings&#xa;5. click confirm button to continue&#xa;6. click run button in the new window to start&#xa;&#xa;Settings:&#xa;1. Sensor: the type of sensor to simulate&#xa;2. Source file: the source file to transmit&#xa;3. Transmit based on: transmit the source file based&#xa;on the time stamp in source file or the frequency&#xa;specified by user&#xa;4. Time Stamp Position: the position of the timestamp&#xa;column in the source file. The first column, the &#xa;last column or no time stamp in source file&#xa;5. Frequency: the user specified frequency,&#xa;frequency mode only&#xa;&#xa;Advance settings&#xa;1. Output byte order: the data byte order in the&#xa;output packet&#xa;2.  Data unit format: the format of the data field&#xa;in the output packet&#xa;3. Frequency Margin: the accuracy between real&#xa;frequency and user specified frequency&#xa;4. Channel Number: how many channels (data fields) &#xa;in the source file&#xa;5.  Include time stamp: whether to send the time &#xa;stamp at transmission to receiver"/>
-            <Property name="selectionEnd" type="int" value="1077"/>
-            <Property name="selectionStart" type="int" value="1077"/>
           </Properties>
         </Component>
       </SubComponents>

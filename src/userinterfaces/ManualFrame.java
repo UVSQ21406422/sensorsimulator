@@ -19,6 +19,7 @@ public class ManualFrame extends javax.swing.JFrame {
     /** Creates new form ManualFrame */
     public ManualFrame() {
         initComponents();
+        this.setLocation((int) (MainFrame.windowwidth - this.getSize().getWidth()) / 2, (int) (MainFrame.windowheight - this.getSize().getHeight()) / 2);
     }
 
     /** This method is called from within the constructor to
@@ -83,17 +84,6 @@ public class ManualFrame extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new ManualFrame().setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
